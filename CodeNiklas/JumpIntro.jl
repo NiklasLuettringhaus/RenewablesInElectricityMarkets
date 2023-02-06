@@ -17,9 +17,10 @@ my_model = Model(Gurobi.Optimizer)
 #Objective
 @objective(my_model, Max,-x+3y)
 #Constraints
-@constraint(my_model, const1, x[t] +y <= 6)
+@constraint(my_model, const1, x + y <= 6)
 @constraint(my_model, x-y >= 2)
 @constraint(my_model, x >= 3)
 @constraint(my_model, y >= 0)
 #Solve
-status = optimize!(my_model)
+print(my_model)
+optimize!(my_model)
