@@ -23,19 +23,11 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_d[d=1:D]>=0) #load of demand
 @variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
 
+@objective(FN, Max, sum( U_d[d]*p_d[d] for d=1:D)-sum( C_g[g]*p_g[g] for g=1:G)) #Maximize the social walefare
 
-@variable(FN,x[f=1:F]>=0,Int) #how much flowers to sell in m^2
-@variable(FN,y,Bin) #decision to plant or not roses and build the greenhouse
-
-@objective(FN, Max, sum( sellprice[f]*x[f] for f=1:F)-20000*y)
-
-@constraint(FN,[r=1:R],sum(res[f,r]*x[f] for f=1:F)<=resCap[r])
-
-
-@constraint(FN,sum(x[f] for f=1:F)<=spaceCap) #space capacity minus the space taken by the greenhouse if consturcted
-@constraint(FN,x[1]<=GreenHouseSpace*y) #roses can only be planted in the greenhouse
-@constraint(FN,x[1]>=200*y) #If the nursery builds the greenhouse, they have use it for at least 200m2 of roses.
-@constraint(FN,x[3]<=spaceCap-GreenHouseSpace*y)
+@constraint(FN,[d=1:D],p_d[d]<=Cap_d[d]) #Demand limits constraint
+@constraint(FN,[g=1:G],p_g[g]<=Cap_g[g]) #Generation limits constraint
+@constraint(FN,sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)=0) #Power balance constraint
 
 print(FN) #print model to screen (only usable for small models)
 
