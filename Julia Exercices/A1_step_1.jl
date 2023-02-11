@@ -7,25 +7,14 @@ using Gurobi
 #************************************************************************
 # PARAMETERS
 
-Flowers=["roses","garden pinks","dahlia"]
-F=length(Flowers)
+U_d=[] #Bid price of demand d
+p_d=[] #load of demand
 
-Resources=["hours", "water", "fertilizer"]
-R=length(Resources)
+C_g=[] # offer price of generator g
+p_g=[] #power scheduled of generetor g
 
-spaceCap=5000  # m^2
-
-res=[ # resources utilized per rows f, columns r  
-    2.5 90 0.3;
-    5 100 0.5;
-    2 120 0.2]
-
-sellprice=[25 30 20] # selling price per flower f
-
-resCap=[20000 700000 2500] #Capacity limit per resource
-
-GreenHouseSpace=700
-
+Cap_g=[] #capacity of generaotr generaotr generaotr g
+Cap_d=[] #maximum load of demand d
 #************************************************************************
 
 
