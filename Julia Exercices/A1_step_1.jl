@@ -86,7 +86,7 @@ FN = Model(Gurobi.Optimizer)
 
 @constraint(FN,[d=1:D],p_d[d]<=Cap_d[d]) #Demand limits constraint
 @constraint(FN,[g=1:G],p_g[g]<=Cap_g[g]) #Generation limits constraint
-@constraint(FN,sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)=0) #Power balance constraint
+@constraint(FN,sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)==0) #Power balance constraint
 
 print(FN) #print model to screen (only usable for small models)
 
