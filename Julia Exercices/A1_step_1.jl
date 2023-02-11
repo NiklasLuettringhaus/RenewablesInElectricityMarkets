@@ -52,6 +52,7 @@ Cap_g=[152
 310
 350
 113.427644] #capacity of generator g
+
 Cap_d=[67.48173
 60.37839
 111.877605
@@ -100,9 +101,9 @@ println("Termination status: $(termination_status(FN))")
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
-    for f=1:F
-        println("$(Flowers[f]) = $(value(x[f]))")
-    end
+    #for f=1:F
+    #    println("$(Flowers[f]) = $(value(x[f]))")
+    #end
 else
     println("No optimal solution available")
 end
