@@ -8,10 +8,8 @@ using Gurobi
 # PARAMETERS
 
 U_d=[] #Bid price of demand d
-p_d=[] #load of demand
 
 C_g=[] # offer price of generator g
-p_g=[] #power scheduled of generetor g
 
 Cap_g=[] #capacity of generaotr generaotr generaotr g
 Cap_d=[] #maximum load of demand d
@@ -21,6 +19,10 @@ Cap_d=[] #maximum load of demand d
 #************************************************************************
 # Model
 FN = Model(Gurobi.Optimizer)
+
+@variable(FN,p_d[d=1:D]>=0) #load of demand
+@variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
+
 
 @variable(FN,x[f=1:F]>=0,Int) #how much flowers to sell in m^2
 @variable(FN,y,Bin) #decision to plant or not roses and build the greenhouse
