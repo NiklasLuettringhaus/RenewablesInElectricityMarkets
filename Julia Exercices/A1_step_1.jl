@@ -8,6 +8,7 @@ using Gurobi
 # PARAMETERS
 D=length(U_d)
 G=length(C_g)
+#profit = zeros(G)
 
 U_d=[17.93875424
 24.42616924
@@ -88,7 +89,7 @@ FN = Model(Gurobi.Optimizer)
 
 @constraint(FN,[d=1:D],p_d[d]<=Cap_d[d]) #Demand limits constraint
 @constraint(FN,[g=1:G],p_g[g]<=Cap_g[g]) #Generation limits constraint
-@constraint(FN,Balance,sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)==0) #Power balance constraint
+@constraint(FN, Balance, sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)==0) #Power balance constraint
 
 print(FN) #print model to screen (only usable for small models)
 
@@ -108,8 +109,22 @@ if termination_status(FN) == MOI.OPTIMAL
     #for f=1:F
     #    println("$(Flowers[f]) = $(value(x[f]))")
     #end
-    DA_price = dual.(Balance) #Equilibrium price
-    println( dual(Balance))  #Print equilibrium price
+    DA_price = -dual.(Balance) #Equilibrium price
+    println("Market clearing price:")
+    println(DA_price)  #Print equilibrium price
+    println("\n")
+    println("Profit of each generator:")
+    for g=1:G
+        println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])))
+        #println("G$g: (", round(Int, sum(value(pg[g,t]) for t=1:T)) ,", ", round(Int, sum(DA_price[t]*value(pg[g,t])-value(pg[g,t])*PC[g] for t=1:T)),") " )
+    end
+    println("\n")
+    println("Utility of each demand:")
+    for d=1:D
+        println("D$d:", round(Int, value(p_d[d])*(U_d[d] - DA_price)))
+        #println("G$g: (", round(Int, sum(value(pg[g,t]) for t=1:T)) ,", ", round(Int, sum(DA_price[t]*value(pg[g,t])-value(pg[g,t])*PC[g] for t=1:T)),") " )
+    end
+
 else
     println("No optimal solution available")
 end
