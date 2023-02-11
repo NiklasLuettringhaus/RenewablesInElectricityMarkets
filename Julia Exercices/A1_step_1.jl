@@ -41,6 +41,23 @@ C_g=[13.32
 10.89
 0] # offer price of generator g
 
+#Startup Cost of generator
+C_st = [
+1430.4
+1430.4
+1725
+3056.7
+437
+312
+312
+0
+0
+0
+624
+2298
+0
+]
+
 Cap_g=[152
 152
 350
