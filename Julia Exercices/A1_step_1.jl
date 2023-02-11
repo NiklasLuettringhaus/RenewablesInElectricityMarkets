@@ -9,6 +9,7 @@ using Gurobi
 D=length(U_d)
 G=length(C_g)
 
+#Bid price of demand d
 U_d=[17.93875424
 24.42616924
 4.749346522
@@ -25,8 +26,9 @@ U_d=[17.93875424
 16.98398964
 12.96682873
 11.388699587 #8.388699587
-18.51956607] #Bid price of demand d
+18.51956607]
 
+ # offer price of generator g
 C_g=[13.32
 13.32
 20.7
@@ -39,9 +41,9 @@ C_g=[13.32
 0
 10.52
 10.89
-0] # offer price of generator g
+0]
 
-#Startup Cost of generator
+#Startup Cost of generator 
 C_st = [
 1430.4
 1430.4
