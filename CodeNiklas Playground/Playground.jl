@@ -91,3 +91,44 @@ setdiff(sportsBrands, sportsBrandsIndia)
 #Adds element
 push!(sportsBrands, "HRX")
 
+#Working with date and time
+using Dates
+now()
+today()
+birthdate = Date(2000,5,1) #YYYY, MM, DD
+birthdate = DateTime(2000,5,1,10,15,25) #Date format with time in hour minute second
+now(UTC)
+
+year(birthdate)
+year(now())
+hour(now())
+
+dayofweek(birthdate)
+dayname(birthdate)
+dayofquarter(birthdate)
+daysinmonth(birthdate)
+
+#today() - birthdate
+today() + Day(5)
+
+dateFormat = DateFormat("dd-mm-yyyy")
+Dates.format(birthdate,dateFormat)
+
+
+#Conditional Statements
+a = 10
+b = 20
+a >= 10 || b < 20 # || is or
+
+a >= 10 && b < 20 # && is the and operator
+
+if a > 10
+    print("a is greater than 10")
+elseif a < 10
+    print("a is less than ten")
+else
+    print("a is 10")
+end
+
+
+
