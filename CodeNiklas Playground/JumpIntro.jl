@@ -107,12 +107,10 @@ costOfWater = 0.2
 @objective(jannsModel, Max, (2-5*costOfWater) * amountTomatoes + (1.5-3*costOfWater) * amountCarrots + (1.25-2*costOfWater) * amountOnions)
 
 #Constraionts
-@constraint(jannsModel, row1, (0.5/20)*amountTomatoes + (0.25/20)*amountCarrots + (0.5/20)*amountOnions <= maxRowLength)
-@constraint(jannsModel, row2, (0.5/20)*amountTomatoes + (0.25/20)*amountCarrots + (0.5/20)*amountOnions <= maxRowLength)
-@constraint(jannsModel, row3, (0.5/20)*amountTomatoes + (0.25/20)*amountCarrots + (0.5/20)*amountOnions <= maxRowLength)
+@constraint(jannsModel, row1, (0.5)*amountTomatoes + (0.25)*amountCarrots + (0.5)*amountOnions <= 60)
 
 optimize!(jannsModel)
-
+#=
 if termination_status(jannsModel) == MOI.OPTIMAL
     println("Optimal solution found")
 
@@ -121,21 +119,53 @@ if termination_status(jannsModel) == MOI.OPTIMAL
     @printf "Product A: %0.3f\n" value.(amountTomatoes)
     @printf "Product B: %0.3f\n" value.(amountCarrots)
     @printf "Product C: %0.3f\n" value.(amountOnions)
-
-    # Compute row usage
-    row1 = (0.5/20)*value(amountTomatoes) + (0.25/20)*value(amountCarrots) + (0.5/20)*value(amountOnions) 
-    row2 = (0.5/20)*value(amountTomatoes) + (0.25/20)*value(amountCarrots) + (0.5/20)*value(amountOnions) 
-    row3 = (0.5/20)*value(amountTomatoes) + (0.25/20)*value(amountCarrots) + (0.5/20)*value(amountOnions) 
-   
-    #Print row usage
-    @printf("Row 1 uses %0.3f m out of %0.3i meters \n", row1, value(maxRowLength))
-    @printf("Row 2 uses %0.3f m out of %0.3i meters \n", row2, value(maxRowLength))
-    @printf("Row 3 uses %0.3f m out of %0.3i meters \n", row3, value(maxRowLength))
     
-
-
     @printf "\nObjective value: %0.3f\n" objective_value(jannsModel)
 else
     error("No solution.")
 end
+
+=#
+
+#Pablos Excercise
+pablosModel = Model(Gurobi.Optimizer)
+
+minimumAmountTires = 100
+maximumAmountTires = 500
+maximumAmountOil = 2000
+
+#Variables
+@variable(pablosModel, 0 <= amountTires <= maximumAmountTires)
+@variable(pablosModel, 0 <= amountOil <= maximumAmountOil)
+@variable(pablosModel, maxTimePablo <= 500)
+
+@variable(pablosModel, tireMachine >= 0, Bin)
+
+#Objective
+@objective(pablosModel, Max, 40*amountTires + 2*amountOil - 5000*tireMachine)
+
+#Constraints
+@constraint(pablosModel, tires, 0.25*amountTires + (20/60)*amountOil <= maxTimePablo)
+
+#Machine constraints 1st one sets the max number of tires wihtout a machine is defined 2nd defines the min numbers
+@constraint(pablosModel, Tire_change_machine1, amountTires - 100 - 400*tireMachine <=0)
+@constraint(pablosModel, tireChangeMachine1, amountTires -101*tireMachine >= 0)
+
+optimize!(pablosModel)
+
+if termination_status(pablosModel) == MOI.OPTIMAL
+    println("Optimal solution found")
+
+    #Print out variable values and objective value
+    println("Variable values:")
+    @printf "Tires sold: %0.3f\n" value.(amountTires)
+    @printf "Oil sold: %0.3f\n" value.(amountOil)
+    @printf "Machine: %0.3f\n" value.(tireMachine)
+    
+    @printf "\nObjective value: %0.3f\n" objective_value(pablosModel)
+else
+    error("No solution.")
+end
+
+
 
