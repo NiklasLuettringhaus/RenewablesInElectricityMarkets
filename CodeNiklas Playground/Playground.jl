@@ -122,13 +122,39 @@ a >= 10 || b < 20 # || is or
 
 a >= 10 && b < 20 # && is the and operator
 
-if a > 10
-    print("a is greater than 10")
-elseif a < 10
-    print("a is less than ten")
-else
-    print("a is 10")
+
+a > 5 ? "Yes" : "No"
+
+letter = 0
+for brand in sportsBrands
+    for letter in brand
+        #print(letter, " ")
+    end
+    #print("\n")
 end
 
+for d in carsMerged
+   # println(d, " ")
+end
 
+for x in 1:10
+    if x % 2 == 0
+        print(x)
+    end
+end
 
+# 2 is a special case, just print it
+println(2)
+
+for num in 3:2:100  # step sizes of 2 starting from 3, only need to check odd numbers now
+    prime_candidate = true  # consider everything prime until proven otherwise
+    for i in 3:2:floor(Int,sqrt(num))  # no need to check 1, num itself, or even numbers
+        if (num % i) == 0   # divisible by a smaller number?
+            prime_candidate = false # mark it not prime...
+            break   # ...and we're outta here!
+        end
+    end
+    if prime_candidate  # if the boolean hasn't been flipped by now, it's prime
+        println(num)
+    end
+end
