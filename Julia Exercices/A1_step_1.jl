@@ -5,12 +5,6 @@ using Gurobi
 #************************************************************************
 
 #************************************************************************
-# PARAMETERS
-D=length(U_d)
-G=length(C_g)
-W=length(WF_prod)
-#profit = zeros(G)
-
 #Bid price of demand d
 U_d = [17.93875424, 24.42616924, 4.749346522, 21.18061301, 2.951325259, 11.02942244, 13.33877397, 12.30192194, 16.97765831, 22.95542703, 2.598026883, 16.71032337, 11.91189354, 16.98398964, 12.96682873, 11.388699587, 18.51956607]
 
@@ -54,6 +48,7 @@ Cap_d = [67.48173, 60.37839, 111.877605, 46.17171, 44.395875, 85.24008, 78.13674
 # PARAMETERS
 D = length(U_d)
 G = length(C_g)
+W = 6
 #************************************************************************
 
 
@@ -62,13 +57,15 @@ G = length(C_g)
 FN = Model(Gurobi.Optimizer)
 
 @variable(FN,p_d[d=1:D]>=0) #load of demand
+@variable(FN,p_w[w=1:W]>=0) #wind farm production
 @variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
 
-@objective(FN, Max, sum( U_d[d]*p_d[d] for d=1:D) - sum(C_g[g]*p_g[g] for g=1:G)) #Maximize the social walefare
+@objective(FN, Max, sum(U_d[d]*p_d[d] for d=1:D) - sum(C_g[g]*p_g[g] for g=1:G)) #Maximize the social whalefare, excl. WF cause they are not associated with costs
 
-@constraint(FN,[d=1:D],p_d[d]<=Cap_d[d]) #Demand limits constraint
-@constraint(FN,[g=1:G],p_g[g]<=Cap_g[g]) #Generation limits constraint
-@constraint(FN, Balance, sum(p_d[d] for d=1:D)-sum(p_g[g] for g=1:G)==0) #Power balance constraint
+@constraint(FN,[d=1:D], p_d[d] <= Cap_d[d]) #Demand limits constraint
+@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]) #Generation limits constraint
+@constraint(FN,[w=1:W], p_w[w] <= WF_prod[1,w]) #weather-based limits constraint WF
+@constraint(FN, Balance, sum(p_d[d] for d=1:D) - sum(p_w[w] for w=1:W) - sum(p_g[g] for g=1:G)==0) #Power balance constraint
 
 print(FN) #print model to screen (only usable for small models)
 
