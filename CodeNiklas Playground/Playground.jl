@@ -158,3 +158,72 @@ for num in 3:2:100  # step sizes of 2 starting from 3, only need to check odd nu
         println(num)
     end
 end
+
+
+alphabet = Dict(string(Char(x1 + 65))=> x1 for x1 in 1:26)
+
+
+[(x,y) for x in 1:3, y in 1:2]
+
+[x for x in 1:10 if x%2 == 0]
+
+[x for x in 1:10 if x%2 ==1]
+
+# Working with string
+
+string1 = "I love Julia"
+lastindex(string1)
+string1[lastindex(string1)]
+
+isascii(string1)
+"Love" * "Julia"
+
+string("love " , "julia")
+
+split(string1," ")
+
+split(string1, "")
+
+
+parse(Float64, "100")
+
+in("I", string1)
+
+occursin("love", string1)
+
+findfirst("l", string1)
+findfirst("love", string1)
+
+replace(string1, "love" => "adore")
+
+#Functions
+f(x) = x + x
+f(2)
+
+f(x,y) = x * 2 - y
+f(2,3)
+
+function multiply(x,y)
+    return x * y
+end
+ 
+multiply(1,2)
+
+function metersToInches(val, name = "Patron")
+    if name == "Patron"
+        prinln("Value for name is not supplied")
+    else
+        println("Hi,", name, " The conversion value is")
+    end
+        return val * 39.37
+end
+
+metersToInches(1.5)
+
+
+function bmiMetric(weight, height)
+    return weight/height^2
+end
+
+bmiMetric(72, 170)
+
