@@ -165,6 +165,11 @@ alphabet = Dict(string(Char(x1 + 65))=> x1 for x1 in 1:26)
 
 [(x,y) for x in 1:3, y in 1:2]
 
+
+a = [1,2,3]
+
+a[1:2]
+
 [x for x in 1:10 if x%2 == 0]
 
 [x for x in 1:10 if x%2 ==1]
@@ -211,9 +216,9 @@ multiply(1,2)
 
 function metersToInches(val, name = "Patron")
     if name == "Patron"
-        prinln("Value for name is not supplied")
+        println("Value for name is not supplied")
     else
-        println("Hi,", name, " The conversion value is")
+        println("Hi,", name, ". The conversion value is")
     end
         return val * 39.37
 end
@@ -227,3 +232,57 @@ end
 
 bmiMetric(72, 170)
 
+metersToInches(2.3, "Niklas")
+
+#Formatting numbers and strings
+using Printf
+
+name = "Niklas";
+@printf("Hello %s", name)
+
+@sprintf("hello %s", name)
+
+ch = 'i'
+
+@printf("%c",ch)
+
+x = 100
+
+@printf("value of x is %i", x)
+
+y = 100.50
+
+@printf("value of y is %.2f", y)
+
+z = 246872374
+@printf("%.3e", z)
+
+#working with real world files
+using CSV
+using DataFrames
+linkToCSV = "/Users/niklasluttringhaus/Documents/GitHub/RenewablesInElectricityMarkets/CodeNiklas Playground/iris.csv"
+iris = CSV.read(linkToCSV, DataFrame, normalizenames = true);
+iris
+
+names(iris)
+size(iris)
+
+first(iris,5)
+
+last(iris)
+
+describe(iris)
+
+iris.Species
+
+irisSpeciesCounter = Dict{String, Integer}()
+
+for k in iris.Species
+    if haskey(irisSpeciesCounter, k)
+        irisSpeciesCounter[k] +=1
+    else
+        irisSpeciesCounter[k] = 1
+    end
+end
+
+print(irisSpeciesCounter)
