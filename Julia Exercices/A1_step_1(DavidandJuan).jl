@@ -47,7 +47,7 @@ FN = Model(Gurobi.Optimizer)
 
 
 @constraint(FN,[d=1:D], p_d[d] <= Cap_d[d]) #Demand limits constraint
-@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]*act_g[g]) #Generation limits constraint
+@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[w=1:W], p_w[w] <= WF_prod[w]) #Weather-based limits constraint WF
 @constraint(FN, Balance, sum(p_d[d] for d=1:D) - sum(p_w[w] for w=1:W) - sum(p_g[g] for g=1:G)==0) #Power balance constraint
 
