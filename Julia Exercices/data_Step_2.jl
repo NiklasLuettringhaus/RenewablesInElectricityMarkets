@@ -78,3 +78,5 @@ T = size(U_d, 1)
 #Number of wind turbines
 W = 6
 
+#Outputs
+DA_price = zeros(T)

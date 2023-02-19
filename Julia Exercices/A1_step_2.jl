@@ -26,7 +26,7 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN, Balance[t=1:T], sum(p_d[t,d] for d=1:D) - sum(p_w[t,w] for w=1:W) - sum(run[t,g]*p_g[t,g] for g=1:G)==0) #Power balance constraint
 @constraint(FN, [t=1:T, g=1:G], st[t,g] >= run[t,g] - (t>1 ? run[t-1,g] : run[T,g]))
 
-print(FN) #print model to screen (only usable for small models)
+#print(FN) #print model to screen (only usable for small models)
 
 #************************************************************************
 
@@ -41,7 +41,10 @@ println("Termination status: $(termination_status(FN))")
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
-    DA_price[t] = -dual.(Balance[t]) #Equilibrium price
+
+    #Equilibrium price
+    -dual.(Balance[:])
+    #Market clearing price
     println("Market clearing price:")
     println(DA_price[t])  #Print equilibrium price
     println("\n")
