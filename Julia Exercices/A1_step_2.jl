@@ -4,7 +4,7 @@ using JuMP
 using Gurobi
 
 include("data_Step_2.jl")
-
+print(length(U_d))
 #************************************************************************
 # Model
 FN = Model(Gurobi.Optimizer)
