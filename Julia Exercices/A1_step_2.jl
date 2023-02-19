@@ -12,8 +12,8 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_d[t=1:T,d=1:D]>=0) #load of demand
 @variable(FN,p_w[t=1:T,w=1:W]>=0) #wind farm production
 @variable(FN,p_g[t=1:T,g=1:G]>=0) #power scheduled of generetor g
-@variable(FN,st[t=1:T,g=1:G]>=0, Bin) #if g starts in hour t
-@variable(FN,run[t=1:T,g=1:G]>=0, Bin) #if g is running in hour t
+@variable(FN,st[t=1:T,g=1:G]>=0) #if g starts in hour t
+@variable(FN,run[t=1:T,g=1:G]>=0) #if g is running in hour t
 
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)  #Revenue from demand
             - sum(run[t,g]*C_g[g]*p_g[t,g] for t=1:T,g=1:G) # Production cost conventional generator
