@@ -1,4 +1,3 @@
-using Gurobi,JuMP,Printf
 #_____________________________________________________________________________________________________
                                             #Janns Sets
 #_____________________________________________________________________________________________________
@@ -50,28 +49,3 @@ if termination_status(jannsSets) == MOI.OPTIMAL
 else
     error("No solution.")
 end
-
-#_____________________________________________________________________________________________________
-                                            #Julias Sets
-#_____________________________________________________________________________________________________
-
-juliasSets = Model(Gurobi.Optimizer)
-
-
-#Defining Sets
-products = ["A", "B", "C"]
-pIS = [i for i in 1:length(products)] #defining the product index set [1,2,3...]
-
-machines = ["M1", "M2"]
-mIS = [i for i in 1:length(machines)]
-
-#parameters
-machineTimes = [[10,60] [32,24] [27,40]]
-machineTimesHours = machineTimes/60
-
-println(machineTimesHours)
-
-machinetimeA = factors[:,1]
-machinetimeB = factors[:,2]
-machinetimeC = factors[:,3]
-

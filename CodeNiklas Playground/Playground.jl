@@ -260,6 +260,7 @@ z = 246872374
 #working with real world files
 using CSV
 using DataFrames
+using Plots
 linkToCSV = "/Users/niklasluttringhaus/Documents/GitHub/RenewablesInElectricityMarkets/CodeNiklas Playground/iris.csv"
 iris = CSV.read(linkToCSV, DataFrame, normalizenames = true);
 iris
@@ -286,3 +287,48 @@ for k in iris.Species
 end
 
 print(irisSpeciesCounter)
+
+first(iris)
+
+iris[:,[2,3,4]]
+#table[rows, columns]
+iris[1:5, 2:3]
+
+
+#visualize DataFrame
+
+
+
+x = 1:15; y = rand(15)
+plot(x,y)
+z= rand(15);
+plot!(x,z)
+
+plot(x,y,title="random graph", xlabel = "X axis this",ylabel= "axis")
+scatter(x,y)
+bar(x,y)
+histogram(y)
+
+p1 = plot(x,y)
+p2 = (scatter(x,y))
+p3 = bar(x,y)
+p4 = histogram(x,y)
+
+plot(p1,p2,p3,p4,layout=(2,2), legend =false)
+
+y = rand(15,4)
+plot(x,y, layout= (4,1))
+
+iris = CSV.read(linkToCSV, DataFrame, normalizenames = true);
+
+plot(iris.Sepal_Length)
+bar(iris.Species,iris.Petal_Length)
+scatter(iris.Petal_Length, iris.Petal_Width)
+
+histogram(iris.Petal_Length)
+
+#DDL - Create, Alter and drop
+#DML - Insert update and delete
+#DQL - Select
+using SQLite
+db = SQLite.DB("Movies")
