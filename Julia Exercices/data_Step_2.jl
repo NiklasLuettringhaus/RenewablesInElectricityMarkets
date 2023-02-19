@@ -9,6 +9,7 @@ C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 0, 10.52, 10.
 
 #Startup Cost of generator
 C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
+
 #Capactiy of generator
 Cap_g = [152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350] 
 #Wind farm production
@@ -41,6 +42,13 @@ WF_prod = [
 #Maximum load of demand
 Cap_d = [67.48173, 60.37839, 111.877605, 46.17171, 44.395875, 85.24008, 78.13674, 106.5501, 108.325935, 120.75678, 165.152655, 120.75678, 197.117685, 62.154225, 207.772695, 113.65344, 79.912575]
 
-
+#Index sets for demands and gener
 D = length(U_d)
 G = length(C_g)
+
+#Hours in a day
+T = 24
+
+#Number of wind turbines
+W = 6
+
