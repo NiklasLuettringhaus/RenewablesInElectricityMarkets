@@ -75,15 +75,17 @@ if termination_status(FN) == MOI.OPTIMAL
     println("\n")
     println("Profit of each generator:")
     for g=1:G
-        println("G$g:", round(Int,value(p_g[g])))
-        println("G$g:", round(Int,value(act_g[g])))
-    
+        println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])-value(act_g[g]).*(C_st[g])))
+    end
+    println("\n")
+    println("Profit of each wind farm:")
+    for w=1:W
+        println("G$w:", round(Int,value(p_w[w])*(DA_price - 0)))
     end
     println("\n")
     println("Utility of each demand:")
     for d=1:D
-    #    println("D$d:", round(Int, value(p_d[d])*(U_d[d] - DA_price)))
-        println("D$d:", round(Int,value(p_d[d])))
+        println("D$d:", round(Int, value(p_d[d])*(U_d[d] - DA_price)))
     end
 
 else
