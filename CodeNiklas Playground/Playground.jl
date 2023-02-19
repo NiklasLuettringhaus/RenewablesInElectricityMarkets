@@ -238,7 +238,8 @@ metersToInches(2.3, "Niklas")
 using Printf
 
 name = "Niklas";
-@printf("Hello %s", name)
+number = 7
+@printf("Hello %s number is %i", name, number)
 
 @sprintf("hello %s", name)
 

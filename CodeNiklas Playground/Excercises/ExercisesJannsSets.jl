@@ -11,7 +11,9 @@ Vegetables = ["Tomatoes", "Carrots", "Onions"]
 vis = [i for i in 1:length(Vegetables)]; println(vis)
 
 #Parameters
-factors = [[0.50, 0.25, 0.50] [5, 3, 2] [2, 1.5, 1.25]]
+factors = [[0.50, 0.25, 0.50] 
+            [5, 3, 2] 
+            [2, 1.5, 1.25]]
 println(factors,size(factors))
 
 #conversion to vectors

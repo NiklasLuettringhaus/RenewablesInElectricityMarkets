@@ -33,51 +33,29 @@ minimumUnits = [ 11, 5, 15] #defining minimum number of units that have to be so
 @objective(juliasSets, Max, sum(profitProduct[p] * numberProducts[p] for p in pIS))
 
 @constraint(juliasSets,minimumUnitsCon[p in pIS], numberProducts[p] >= minimumUnits[p])
-
 @constraint(juliasSets, machineCon[m in mIS],sum(machineTimesHours[m, p] * numberProducts[p] for p in pIS) <= maxMachineTimes[m])
 
 optimize!(juliasSets)
 
-for m in mIS
-    machineTimeUsed = zeros[length[mIS]]
-    for p in pIS
-        machineTimeUsed[m] += value(machineTimeUsed[m,p])*value(numberProducts[p])
-    end
-    println("Machine ", machines[m], " used ", machineTimeUsed, " hours")
-end
-
-
-
-for m in mIS
-    machineTime = 0 
-    for p in pIS
-        machineTime[m] += value(machineTimesHours[m,p])*value(numberProducts[p])
-    end
-end
-
-
-
-
-
-println(sum(machineTimesHours[1,:]))
 #compute machine times
-for p in numberProducts
-    machineTimeUsed = numberProducts[p] * machineTimes[:, ]
-
+machineTimeUsed = zeros(length(mIS))
+for m in mIS
+    for p in pIS
+        machineTimeUsed[m] += value(machineTimesHours[m,p])*value(numberProducts[p])
+    end
 end
+
 if termination_status(juliasSets) == MOI.OPTIMAL
     println("Optimal Solution Found")
 
 
-    println("Variable Values:")
+    println("\nVariable Values:")
         for p in pIS
             println("Product ", products[p], ": ", value.(numberProducts[p]))
         end
-    println("Machine Times:")
+    println("\nMachine Times:")
         for m in mIS
-            println("Machine ", machines[m], " used ", machineTimesHours)
-
-
+            @printf("Machine %s used %0.3f of %0.3f hours \n", machines[m], machineTimeUsed[m], maxMachineTimes[m])
         end
     @printf "\nObjective value is: %0.3f\n" objective_value(juliasSets)
 else
