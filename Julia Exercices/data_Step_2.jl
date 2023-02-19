@@ -68,11 +68,12 @@ WF_prod = [
 Cap_d = [67.48173, 60.37839, 111.877605, 46.17171, 44.395875, 85.24008, 78.13674, 106.5501, 108.325935, 120.75678, 165.152655, 120.75678, 197.117685, 62.154225, 207.772695, 113.65344, 79.912575]
 
 #Index sets for demands and gener
-[D,T] = size(U_d)
+D = size(U_d, 2)
+
 G = length(C_g)
 
 #Hours in a day
-T = 24
+T = size(U_d, 1)
 
 #Number of wind turbines
 W = 6
