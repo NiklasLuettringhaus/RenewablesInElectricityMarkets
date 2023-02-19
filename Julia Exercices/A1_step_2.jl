@@ -43,6 +43,7 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Solution: ")
 
     #Equilibrium price
+    #This does not work because dual is not available for models with binaries
     -dual.(Balance[:])
     #Market clearing price
     println("Market clearing price:")
