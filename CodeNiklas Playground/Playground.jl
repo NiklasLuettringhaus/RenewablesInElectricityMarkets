@@ -166,9 +166,10 @@ alphabet = Dict(string(Char(x1 + 65))=> x1 for x1 in 1:26)
 [(x,y) for x in 1:3, y in 1:2]
 
 
-a = [1,2,3]
-
+a = [11,22,33,44,55,66,77]
 a[1:2]
+
+a[[2,5,6]]
 
 [x for x in 1:10 if x%2 == 0]
 
