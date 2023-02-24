@@ -35,7 +35,7 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 
 #Electrolyzer constraints
-@constraint(FN,[t=1:T, w=1:2], p_w_H2[t,w] <= WF_cap[w]/2)
+@constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2[t,w] <= WF_cap[w]/2)
 @constraint(FN,[t=1:T, w=1:2], sum(p_w_H2[t,w]*H2_prod for t=1:T) >= H2_cap)
 
 #************************************************************************
