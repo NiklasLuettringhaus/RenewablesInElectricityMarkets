@@ -2,7 +2,6 @@
 # Incredible Chairs, Simple LP
 using JuMP
 using Gurobi
-using Plots
 
 
 include("data_Step_2.jl")
@@ -86,6 +85,13 @@ if termination_status(FN) == MOI.OPTIMAL
         println("WF $w: ", round(Int,value(sum(p_w_H2[t,w]*H2_prod for t=1:T))))
     end
     println("\n")
+
+    println("Fulfilled demand:")
+    for t=1:T
+            println("Hour $t: ", value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[t,d] for d=1:D))*100), " %")
+    end
+    println("\n")
+
 #********************************************************
     #println("Utility of each demand:")
     #for d=1:D
