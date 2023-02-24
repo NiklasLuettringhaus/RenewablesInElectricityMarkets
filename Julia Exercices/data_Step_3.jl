@@ -74,7 +74,7 @@ WF_forecast = [
 ]
 
 
-WF_prod =  WF_forecast * WF_cap
+WF_prod = WF_forecast.* (WF_cap)'
 
 
 #Maximum load of demand
