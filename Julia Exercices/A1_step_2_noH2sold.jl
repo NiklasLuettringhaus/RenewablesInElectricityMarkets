@@ -53,6 +53,8 @@ if termination_status(FN) == MOI.OPTIMAL
 
     #Equilibrium price
     DA_price = -dual.(Balance[:])
+
+    println("Cost of hydrogen production: ", value(sum(DA_price[t]*p_w_H2[t,w] for t=1:T, w=1:2)))
     #Market clearing price
     println("Market clearing price:")
     for t=1:T
