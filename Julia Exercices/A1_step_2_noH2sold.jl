@@ -2,6 +2,7 @@
 # Incredible Chairs, Simple LP
 using JuMP
 using Gurobi
+using Plots
 
 
 include("data_Step_2.jl")
@@ -51,6 +52,7 @@ println("Termination status: $(termination_status(FN))")
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
+    hours = 1:T #define vector of hour numbers
 
     #Equilibrium price
     DA_price = -dual.(Balance[:])
@@ -84,7 +86,7 @@ if termination_status(FN) == MOI.OPTIMAL
         println("WF $w: ", round(Int,value(sum(p_w_H2[t,w]*H2_prod for t=1:T))))
     end
     println("\n")
-
+#********************************************************
     #println("Utility of each demand:")
     #for d=1:D
     #    println("D$d: ", round(Int, value(sum(p_d[t,d]*(U_d[d] - DA_price[t]) for t=1:T))))
