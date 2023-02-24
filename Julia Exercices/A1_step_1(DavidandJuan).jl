@@ -67,9 +67,7 @@ if termination_status(FN) == MOI.OPTIMAL
     end
 
     total_generated = value(sum(p_g)+sum(p_w))
-
     total_demand = sum(Cap_d)
-   
     println("Total generated power: $total_generated")
     println("Supplied demand = $(round((total_generated/total_demand)*100)) % ")
     
