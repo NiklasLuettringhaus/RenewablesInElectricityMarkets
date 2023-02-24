@@ -94,6 +94,9 @@ W = 6
 #Outputs
 DA_price = zeros(T)
 
+
+N=size(B)[1]
+
 #Suceptance matrix from node n (row) to node m (column)
 B=[0	0.0146	0.2253	0	0.0907	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
 0.0146	0	0	0.1356	0	0.205	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
@@ -149,3 +152,42 @@ F=[
 0	0	0	0	0	0	0	0	0	0	0	500	250	0	0	0	0	0	0	1000	0	0	0	0;
 0	0	400	0	0	0	0	0	0	0	0	0	0	0	500	0	0	0	0	0	0	0	0	0;
 ]
+
+psi_d= zeros(D, N) #location of the demand in the node
+psi_d[1,1]=1;
+psi_d[2,2]=1;
+psi_d[3,3]=1;
+psi_d[4,4]=1;
+psi_d[5,5]=1;
+psi_d[6,6]=1;
+psi_d[7,7]=1;
+psi_d[8,8]=1;
+psi_d[9,9]=1;
+psi_d[10,10]=1;
+psi_d[11,13]=1;
+psi_d[12,14]=1;
+psi_d[13,15]=1;
+psi_d[14,16]=1;
+psi_d[15,18]=1;
+psi_d[16,19]=1;
+psi_d[17,20]=1;
+
+psi_g= zeros(G, N) #location of the generators in the node
+psi_g[1,1]=1;
+psi_g[2,2]=1;
+psi_g[3,7]=1;
+psi_g[4,13]=1;
+psi_g[5,15]=1;
+psi_g[6,15]=1;
+psi_g[7,16]=1;
+psi_g[8,18]=1;
+psi_g[9,21]=1;
+psi_g[10,22]=1;
+psi_g[11,23]=1;
+psi_g[12,23]=1;
+
+psi_w=zeros(W,N) #location of the wind farms in the node
+psi_w[1,3]=1;
+psi_w[2,5]=1;
+psi_w[3,16]=1;
+psi_w[4,21]=1;

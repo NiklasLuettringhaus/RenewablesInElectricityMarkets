@@ -55,10 +55,27 @@ if termination_status(FN) == MOI.OPTIMAL
     for g=1:G
         println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])))
     end
+
+    print("\n Generated power of each Generator")
+
+    for g=1:G
+        println("G$g:  ", round(Int,value(p_g[g])))
+    end
+
+    for w=1:W
+        println("Windfarm $w: ", round(Int,value(p_w[w])))
+    end
+
+    total_generated = value(sum(p_g)+sum(p_w))
+    total_demand = sum(Cap_d)
+    println("Total generated power: $total_generated")
+    println("Supplied demand = $(round((total_generated/total_demand)*100)) % ")
+    
+
     println("\n")
     println("Profit of each wind farm:")
     for w=1:W
-        println("G$w:", round(Int,value(p_w[w])*(DA_price - 0)))
+        println("W $w:", round(Int,value(p_w[w])*(DA_price - 0)))
     end
     println("\n")
     println("Utility of each demand:")
@@ -81,6 +98,7 @@ for d in 1:D
     Demand_Dictionary[d] = (U_d[d], Cap_d[d])
 end
 
+#=
 # Sort generators by ascending order of their offer price
 sorted_generators = sort(collect(Generator_dictionary), by=x->x[2][1])
 
@@ -115,8 +133,8 @@ generator_ends = [sum(generator_capacities[1:g]) for g in 1:G]
 
 
 # Plot the merit order curve
-plot([generator_starts, generator_ends], generator_prices )
+scatter([generator_starts, generator_ends], generator_prices )
 
 
-plot([generator_starts; generator_ends], repeat(generator_prices, inner=[1]), label="Generator", xlabel="Capacity", ylabel="Price", legend=:topleft)
-#plot!([demand_starts; demand_ends], repeat(demand_prices, inner=[2]), label="Demand") Ah
+scatter([generator_starts; generator_ends], repeat(generator_prices, inner=[1]), label="Generator", xlabel="Capacity", ylabel="Price", legend=:topleft)
+#plot!([demand_starts; demand_ends], repeat(demand_prices, inner=[2]), label="Demand") =#
