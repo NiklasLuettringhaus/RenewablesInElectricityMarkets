@@ -19,7 +19,7 @@ FN = Model(Gurobi.Optimizer)
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)  #Revenue from demand
             - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G) # Production cost conventional generator
             - sum(DA_price[t]*p_w_H2[t,w] for t=1:T, w=1:2) # production cost of H2 > doesn't work
-            + sum(H2_price*p_w_H2[t,w] for t=1:T, w=1:2)) #Maximize the social whalefare, /# Production cost Wind farm
+            + sum(H2_price*p_w_H2[t,w]*H2_prod for t=1:T, w=1:2)) #Maximize the social whalefare, /# Production cost Wind farm
 
 
 #Capacity limits
@@ -51,8 +51,6 @@ println("Termination status: $(termination_status(FN))")
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
-
-
 
     #Equilibrium price
     DA_price = -dual.(Balance[:])
