@@ -16,9 +16,8 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_g[t=1:T,g=1:G]>=0) #power scheduled of generetor g
 
 
-@objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)  #Revenue from demand
-            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G) # Production cost conventional generator
-            - sum(DA_price[t]*p_w_H2[t,w] for t=1:T,w=1:2)) # Production cost H2 > doesn't work
+@objective(FN, Max,   sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)  #Revenue from demand
+                    - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)) # Production cost conventional generator
 
 #Capacity limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
