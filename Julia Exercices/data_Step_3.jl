@@ -172,6 +172,7 @@ psi_d[15,18]=1;
 psi_d[16,19]=1;
 psi_d[17,20]=1;
 
+
 psi_g= zeros(G, N) #location of the generators in the node
 psi_g[1,1]=1;
 psi_g[2,2]=1;
