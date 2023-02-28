@@ -76,7 +76,7 @@ if termination_status(FN) == MOI.OPTIMAL
 
     println("Daily profit of windfarms:")
     for w=1:W
-        println("WF $w: ", round(Int,value(sum(p_w_grid[t,w]*DA_price[t] for t=1:T))))
+        println("WF $w: ", round(Int,value(sum(p_w_grid[t,w]*DA_price[t] for t=1:T) + sum(H2_price*p_w_H2[t,w]*H2_prod for t=1:T))))
     end
     println("\n")
 
