@@ -49,16 +49,19 @@ println("Termination status: $(termination_status(FN))")
 # Solution
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
-    println("Solution: ")
 
     #Equilibrium price
     DA_price = -dual.(Balance[:])
-
+    println("\n")
     println("Cost of hydrogen production: ", value(sum(DA_price[t]*p_w_H2[t,w] for t=1:T, w=1:2)))
+    
     #Market clearing price
+    println("\n")  
+    println("Average market clearing price: ", value(sum(DA_price[t] for t=1:T)/T)) #Print average market clearing price
+    println("\n")
     println("Market clearing price:")
     for t=1:T
-        println("Hour $t: ", value(DA_price[t])) #Print equilibrium price
+        println("Hour $t: ", value(DA_price[t]))    #Print equilibrium price
     end   
 
     println("\n")
