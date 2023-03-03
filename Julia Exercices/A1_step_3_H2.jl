@@ -2,7 +2,7 @@
 # Incredible Chairs, Simple LP
 using JuMP
 using Gurobi
-import DataFrames
+using DataFrames
 import XLSX
 
 #import Pkg; Pkg.add("XLSX")
