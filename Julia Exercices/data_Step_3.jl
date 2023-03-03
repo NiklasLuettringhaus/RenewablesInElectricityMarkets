@@ -1,6 +1,8 @@
 #***********************************************
 #                   This is the data file for step two
 #************************************************
+using LinearAlgebra
+
 #Bid prices for demand d
 U_d = [
 3.88	4.65	14.61	22.59	36.93	45.00	16.37	32.82	22.61	38.34	13.74	17.00	6.41	19.58	3.54	16.53	47.94
@@ -284,6 +286,8 @@ psi_w[1,3]=1;
 psi_w[2,5]=1;
 psi_w[3,16]=1;
 psi_w[4,21]=1;
+psi_w[5,16]=1;
+psi_w[6,21]=1;
 
 psi_n= zeros(N, A) #location of the node n in the area a
 psi_n[1,2]=1;
@@ -326,4 +330,4 @@ for a=1:A
         ATC[a,b]=sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
     end
 end
-
+ATC[diagind(ATC)[1:A]] .= 0 #Set all the diagonal elements to zero
