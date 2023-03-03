@@ -13,7 +13,7 @@ using XLSX
 
 #************************************************************************
 #PARAMETERS
-include("data_Step_3.jl")
+include("data_Step_4.jl")
 
 #************************************************************************
 
@@ -59,7 +59,8 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2[t,w] <= WF_cap[w]/2)
 @constraint(FN,[t=1:T, w=1:2], sum(p_w_H2[t,w]*H2_prod for t=1:T) >= H2_cap)
 
-#print(FN) #print model to screen (only usable for small models)
+#Forecast Error WF
+
 
 #************************************************************************
 
