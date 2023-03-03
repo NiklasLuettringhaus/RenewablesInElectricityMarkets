@@ -332,5 +332,8 @@ histogram(iris.Petal_Length)
 #DDL - Create, Alter and drop
 #DML - Insert update and delete
 #DQL - Select
-using SQLite
-db = SQLite.DB("Movies")
+
+using StatsBase
+items = ["a", 2, 5, "h", "hello", 3]
+weights = [0.1, 0.1, 0.2, 0.2, 0.1, 0.3]
+sample(items, Weights(weights))

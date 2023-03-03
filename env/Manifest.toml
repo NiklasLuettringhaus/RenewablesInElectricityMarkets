@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "740019de7ba801f3925907691032265edab5ee22"
+project_hash = "2511e346a241a28f6467bb4f1719684681034c24"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -255,9 +255,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[deps.Distributions]]
 deps = ["ChainRulesCore", "DensityInterface", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns", "Test"]
-git-tree-sha1 = "74911ad88921455c6afcad1eefa12bd7b1724631"
+git-tree-sha1 = "da9e1a9058f8d3eec3a8c9fe4faacfb89180066b"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.80"
+version = "0.25.86"
 
 [[deps.DocStringExtensions]]
 deps = ["LibGit2"]
@@ -1166,6 +1166,12 @@ deps = ["IteratorInterfaceExtensions"]
 git-tree-sha1 = "c06b2f539df1c6efa794486abfb6ed2022561a39"
 uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
 version = "1.0.1"
+
+[[deps.TableView]]
+deps = ["Dates", "JSExpr", "JSON", "Observables", "Tables", "UUIDs", "WebIO"]
+git-tree-sha1 = "c05a0e27e8c51f19f13c311d95c9352f26ce58a3"
+uuid = "40c74d1a-b44c-5b06-a7c1-6cbea58ea978"
+version = "0.7.2"
 
 [[deps.Tables]]
 deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "LinearAlgebra", "OrderedCollections", "TableTraits", "Test"]
