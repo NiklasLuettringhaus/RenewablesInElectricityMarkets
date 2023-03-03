@@ -51,7 +51,7 @@ Cap_g_init = [76, 76, 0, 0, 0, 0, 124, 240, 240, 240, 248, 280]
 Cap_g = [152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350] 
 #Wind farm production
 
-WF_cap = [300 300 10 20 50 30]
+WF_cap = [300 300 10 20 50 30]  
 
 #Windfarm production
 WF_prod = WF_forecast.* (WF_cap)
@@ -114,6 +114,8 @@ WF_prod_rt = [5.76690648 137.07907155 7.656024222 7.152815820000001 40.800866235
 159.220462095 92.1997551 10.0 15.923113059 32.089655920000006 11.981618212499999; 
 248.15196287999999 252.10618323000003 4.039300245 18.655104716999997 29.633750550000002 3.8452688160000004]
 
+WF_error = WF_prod - WF_prod_rt
+
 #***************************************
 #             DO NOOT TOUCH THIS WILL GENERATE A NEW ACTUAL PRODUCTION OF ALL WINDFARMS SO DO NOT DUCKING TOUCH
 #***************************************
@@ -121,11 +123,11 @@ WF_prod_rt = [5.76690648 137.07907155 7.656024222 7.152815820000001 40.800866235
 WF_prod_rt = zeros(24,6)
 for t=1:T
     for w=1:W
-        WF_error[t,w] = sample(rt_wind, Weights(prob)) * WF_prod[t,w] #Weighted error value for each hour and windfarm
-        if WF_error[t,w] > WF_cap[w]
+        WF_temp[t,w] = sample(rt_wind, Weights(prob)) * WF_prod[t,w] #Weighted error value for each hour and windfarm
+        if WF_temp[t,w] > WF_cap[w]
             WF_prod_rt[t,w] = WF_cap[w]
         else
-            WF_prod_rt[t,w] = WF_error[t,w]
+            WF_prod_rt[t,w] = WF_temp[t,w]
         end 
     end
 end
