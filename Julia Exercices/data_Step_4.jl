@@ -372,3 +372,19 @@ rt_wind = [
 1.9
 1.95
 2]
+
+println(length(rt_wind))
+
+using StatsBase
+sample(rt_wind, Weights(prob))
+
+WF_error = sample(rt_wind, Weights(prob)) * WF_prod
+
+if WF_error > WF_cap
+    WF_prod_rt = WF_cap
+    else
+        WF_prod_rt = WF_error
+end
+
+
+WF_prod
