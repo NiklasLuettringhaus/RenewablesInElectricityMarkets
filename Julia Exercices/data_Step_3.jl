@@ -294,6 +294,7 @@ psi_n[5,2]=1;
 psi_n[6,3]=1;
 psi_n[7,3]=1;
 psi_n[8,3]=1;
+psi_n[9,2]=1;
 psi_n[10,3]=1;
 psi_n[11,2]=1;
 psi_n[12,3]=1;
@@ -319,24 +320,10 @@ for a in 1:A
 end =#
 
 
-#=ATC=zeros(A, A)
+ATC=zeros(A, A)
 for a=1:A
     for b=1:A
         ATC[a,b]=sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
     end
-end=#
-
-#ATC[a,b]=sum(F[n,m] for n=1:N, m=1:N if psi_n[n,2]==1 && psi_n[m,3]==1)
-
-for a=1:A
-    for b=1:A
-        for n=1:N
-            for m=1:N
-                if psi_n[n,a]==1 && psi_n[m,b]==1
-                    println(F[n,m] )
-
-                end
-            end
-        end
-    end
 end
+
