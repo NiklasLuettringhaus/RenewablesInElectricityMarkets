@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "61a94b16d9e268db1b512f7b843248dccfdbfa78"
+project_hash = "2511e346a241a28f6467bb4f1719684681034c24"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1166,6 +1166,12 @@ deps = ["IteratorInterfaceExtensions"]
 git-tree-sha1 = "c06b2f539df1c6efa794486abfb6ed2022561a39"
 uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
 version = "1.0.1"
+
+[[deps.TableView]]
+deps = ["Dates", "JSExpr", "JSON", "Observables", "Tables", "UUIDs", "WebIO"]
+git-tree-sha1 = "c05a0e27e8c51f19f13c311d95c9352f26ce58a3"
+uuid = "40c74d1a-b44c-5b06-a7c1-6cbea58ea978"
+version = "0.7.2"
 
 [[deps.Tables]]
 deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "LinearAlgebra", "OrderedCollections", "TableTraits", "Test"]
