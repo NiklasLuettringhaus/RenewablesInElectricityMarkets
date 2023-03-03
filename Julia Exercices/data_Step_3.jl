@@ -36,11 +36,20 @@ C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 0, 10.52, 10.
 #Startup Cost of generator
 C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
 
+#Ramp up capactiy of generator g
+Ramp_g_u = [120, 120, 350, 240, 60, 155, 155, 280, 280, 300, 1380, 240]
+
+#Ramp down capacity of generator g
+Ramp_g_d = [120, 120, 350, 240, 60, 155, 155, 280, 280, 300, 1380, 240]
+
+#Initial capacitiy of generator g
+Cap_g_init = [76, 76, 0, 0, 0, 0, 124, 240, 240, 240, 248, 280]
+
 #Capactiy of generator
 Cap_g = [152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350] 
 #Wind farm production
 
-WF_cap = [150, 150, 10, 20, 50, 30]
+WF_cap = [300 300 10 20 50 30]
 
 H2_prod = 18 # kg/MW
 H2_cap = 30000 #kg
