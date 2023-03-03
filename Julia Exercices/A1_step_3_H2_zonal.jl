@@ -88,8 +88,10 @@ if termination_status(FN) == MOI.OPTIMAL
     PG_df=DataFrame(value.(p_g[:, :]),:auto)
     PD_df=DataFrame(value.(p_d[:, :]),:auto)
     PW_Grid_df=DataFrame(value.(p_w_grid[:, :]),:auto)
-
-
+    PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
+    PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
+    PW_Grid_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w*psi_n,areas)
+#Gen_zonal_df=DataFrame(psi_g*psi_n,:auto)
 else
     println("No optimal solution available")
 end
@@ -106,7 +108,10 @@ XLSX.writetable("results_step3_nodal.xlsx",
     Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
     Generation = (collect(eachcol(PG_df)), names(PG_df)),
     Demand=(collect(eachcol(PD_df)), names(PD_df)),
-    Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df))
+    Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
+    Zonal_Generation=(collect(eachcol(PG_zonal_df)), names(PG_zonal_df)),
+    Zonal_Demand=(collect(eachcol(PD_zonal_df)), names(PD_zonal_df)),
+    Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
     )
 
 #*****************************************************

@@ -35,6 +35,7 @@ U_d = [
 #Offer prices of generator g
 C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 0, 10.52, 10.89]
 
+
 #Startup Cost of generator
 C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
 
@@ -328,6 +329,7 @@ ATC=zeros(A, A)
 for a=1:A
     for b=1:A
         ATC[a,b]=sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
+        #ATC[a,b]=0.2*sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
     end
 end
 ATC[diagind(ATC)[1:A]] .= 0 #Set all the diagonal elements to zero
