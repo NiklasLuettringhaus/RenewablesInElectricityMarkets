@@ -150,9 +150,10 @@ G = length(C_g)
 
 #Hours in a day
 T = size(U_d, 1)
-
+Hours_in_day = string.([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24])
 #Number of wind turbines
-W = 6
+ W = 6
+ Wind_turbines = string.(["W1","W2","W3","W4","W5","W6"])
 
 #Outputs
 DA_price = zeros(T)
