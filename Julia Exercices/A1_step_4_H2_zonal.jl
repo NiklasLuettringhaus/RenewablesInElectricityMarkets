@@ -137,7 +137,7 @@ if termination_status(FN) == MOI.OPTIMAL
 
     println("Fulfilled demand:")
     for t=1:T
-            println("Hour $t: ", value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100), " %")
+            println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
     end
     println("\n")
 
