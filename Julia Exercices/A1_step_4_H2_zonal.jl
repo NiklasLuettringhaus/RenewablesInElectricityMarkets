@@ -23,7 +23,6 @@ FN = Model(Gurobi.Optimizer)
 
 @variable(FN,p_d[t=1:T,d=1:D]>=0) #load of demand
 
-#@variable(FN,p_w_grid[t=1:T,w=1:W]>=0) #wind farm production to grid
 @variable(FN,up_bal_w_H2[t=1:T,w=1:W]>=0) # up balancing action of electrolyzers
 @variable(FN,down_bal_w_H2[t=1:T,w=1:W]>=0) # down balancing action of electrolyzers
 @variable(FN, wind_cur[t=1:T, w=1:W]>=0) #wind farm curtailment if electrolyzer
@@ -38,10 +37,10 @@ FN = Model(Gurobi.Optimizer)
 
 
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)              #Revenue from demand
-            #- sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
-            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G))                      #Production cost + start-up cost conventional generator
-            #- sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
-            #- sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
+            - sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
+            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)                      #Production cost + start-up cost conventional generator
+            - sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
+            - sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
 
 #Capacity Limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
@@ -126,7 +125,6 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Daily production of windfarms:")
     for w=1:W
         println("Grid WF $w: ", round(Int,value(sum(p_w_grid_DA[t,w] for t=1:T))))
-        println("\n")
         println("H2 WF $w: ", round(Int,value(sum(p_w_H2_DA[t,w] for t=1:T))))
     end
     println("\n")
