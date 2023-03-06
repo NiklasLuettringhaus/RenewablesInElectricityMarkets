@@ -26,20 +26,22 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_w_grid[t=1:T,w=1:W]>=0) #wind farm production to grid
 @variable(FN,up_bal_w_H2[t=1:T,w=1:W]>=0) # up balancing action of electrolyzers
 @variable(FN,down_bal_w_H2[t=1:T,w=1:W]>=0) # down balancing action of electrolyzers
-@variable(FN, wind_cur[t=1:T,w=1:W]>=0) #wind farm curtailment if electrolyzer
+@variable(FN, wind_cur[t=1:T, w=1:W]>=0) #wind farm curtailment if electrolyzer
 @variable(FN, load_cur[t=1:T, d=1:D]>=0) #load curtailment
 
 @variable(FN,p_w_grid_DA[t=1:T,w=1:W]>=0) #wind farm production to grid from DA
 @variable(FN,p_w_H2_DA[t=1:T,w=1:W]>=0) #wind farm production to electrolyzer from DA
 
 @variable(FN,p_g[t=1:T,g=1:G]>=0) #power scheduled of generetor g
-#@variable(FN,theta[t=1:T,n=1:N]) #voltage angle at each bus
 @variable(FN,f[t=1:T,a=1:A,b=1:A]) #DC flows between nodes n to m
 
 
 
-@objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)  #Revenue from demand
-            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)) # Production cost + start-up cost conventional generator
+@objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)              #Revenue from demand
+            - sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
+            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)                      # Production cost + start-up cost conventional generator
+            - sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
+            - sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
 
 #Capacity Limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
@@ -58,8 +60,6 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 
 #Power Flow constraints
-#@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]<=F[n,m]) # Max Capacity of line connecting bus n to m
-#@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]>=-F[n,m]) # Min Capacity of line connecting bus n to m
 @constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]<=ATC[a,b]) # Max ATC connecting zones a to b
 @constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]>=-ATC[b,a]) # Min ATC connecting zones a to b
 @constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]==-f[t,b,a]) #Symmetrical flow
@@ -69,10 +69,10 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T, w=1:2], sum(p_w_H2_DA[t,w]*H2_prod for t=1:T) >= H2_cap)
 
 #Balancing action
-@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) >= 0], sum(WF_error[t,w] for w=1:W) == sum(wind_cur[t,w] for w=1:W) + sum(up_bal_w_H2[t,w] for w=1:2))    #up balancing action of electrolyzer needs to match WF error
-@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) < 0], abs(sum(WF_error[t,w] for w=1:W)) == sum(load_cur[t,d] for d=1:D) + sum(down_bal_w_H2[t,w] for w=1:2))  #down balancing action of electrolyzer needs to match WF error
-@constraint(FN,[t=1:T, w=1:2], -down_bal_w_H2[t,w] <= p_w_H2_DA[t,w] - 0.01*(WF_cap[w]/2))              #maximum down balancing
-@constraint(FN,[t=1:T, w=1:2], up_bal_w_H2[t,w] <= WF_cap[w]/2 - p_w_H2_DA[t,w])                        #maximum up balancing
+@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) >= 0], sum(WF_error[t,w] for w=1:W) == sum(wind_cur[t,w] for w=1:W) + sum(down_bal_w_H2[t,w] for w=1:2))    #down balancing action of electrolyzer needs to match WF error
+@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) < 0], abs(sum(WF_error[t,w] for w=1:W)) == sum(load_cur[t,d] for d=1:D) + sum(up_bal_w_H2[t,w] for w=1:2))  #up balancing action of electrolyzer needs to match WF error
+@constraint(FN,[t=1:T, w=1:2], -up_bal_w_H2[t,w] <= p_w_H2_DA[t,w] - 0.01*(WF_cap[w]/2))                    #maximum up balancing
+@constraint(FN,[t=1:T, w=1:2], down_bal_w_H2[t,w] <= WF_cap[w]/2 - p_w_H2_DA[t,w])                          #maximum down balancing
 
 #print(FN) #print model to screen (only usable for small models)
 
