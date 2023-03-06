@@ -23,7 +23,7 @@ FN = Model(Gurobi.Optimizer)
 
 @variable(FN,p_d[t=1:T,d=1:D]>=0) #load of demand
 
-@variable(FN,p_w_grid[t=1:T,w=1:W]>=0) #wind farm production to grid
+#@variable(FN,p_w_grid[t=1:T,w=1:W]>=0) #wind farm production to grid
 @variable(FN,up_bal_w_H2[t=1:T,w=1:W]>=0) # up balancing action of electrolyzers
 @variable(FN,down_bal_w_H2[t=1:T,w=1:W]>=0) # down balancing action of electrolyzers
 @variable(FN, wind_cur[t=1:T, w=1:W]>=0) #wind farm curtailment if electrolyzer
@@ -38,10 +38,10 @@ FN = Model(Gurobi.Optimizer)
 
 
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)              #Revenue from demand
-            - sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
-            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)                      # Production cost + start-up cost conventional generator
-            - sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
-            - sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
+            #- sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
+            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G))                      #Production cost + start-up cost conventional generator
+            #- sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
+            #- sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
 
 #Capacity Limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
@@ -51,7 +51,7 @@ FN = Model(Gurobi.Optimizer)
 #Power Balance
 @constraint(FN, Balance[t=1:T,a=1:A], sum(p_d[t,d]*psi_d[d,n] for d=1:D, n=1:N if psi_n[n,a]==1) 
                                 + sum(f[t,a,b] for b=1:A if ATC[a,b]>0) 
-                                - sum(p_w_grid[t,w]*psi_w[w,n] for w=1:W, n=1:N if psi_n[n,a]==1) 
+                                - sum(p_w_grid_DA[t,w]*psi_w[w,n] for w=1:W, n=1:N if psi_n[n,a]==1) 
                                 - sum(p_g[t,g]*psi_g[g,n] for g=1:G, n=1:N if psi_n[n,a]==1)
                                 ==0)
 
@@ -90,17 +90,68 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
+
+    println("Cost of hydrogen production: ", value(sum(DA_price[t]*p_w_H2_DA[t,w] for t=1:T, w=1:2)))
+    #Market clearing price
     println("Market clearing price:")
-    print(DA_price)  #Print equilibrium price
+    for t=1:T
+        println("Hour $t: ", value(DA_price[t])) #Print equilibrium price
+    end   
+
+    println("\n")
+    println("Daily profit of each generator:")
+    for g=1:G
+        println("G$g: ", round(Int,value(sum(p_g[t,g]*(DA_price[t] - C_g[g]) for t=1:T))))
+    end
+    println("\n")
+
+    println("Daily production of each generator:")
+    for g=1:G
+        println("G$g: ", round(Int,value(sum(p_g[t,g] for t=1:T))))
+    end
+    println("\n")
+
+    println("Daily demand:")
+    for d=1:D
+        println("D$d: ", round(Int,value(sum(p_d[t,d] for t=1:T))))
+    end
+    println("\n")
+
+    println("Daily profit of windfarms:")
+    for w=1:W
+        println("WF $w: ", round(Int,value(sum(p_w_grid_DA[t,w]*DA_price[t] for t=1:T))))
+    end
+    println("\n")
+
+    println("Daily production of windfarms:")
+    for w=1:W
+        println("Grid WF $w: ", round(Int,value(sum(p_w_grid_DA[t,w] for t=1:T))))
+        println("\n")
+        println("H2 WF $w: ", round(Int,value(sum(p_w_H2_DA[t,w] for t=1:T))))
+    end
+    println("\n")
+
+    println("Daily production of hydrogen:")
+    for w=1:2
+        println("WF $w: ", round(Int,value(sum(p_w_H2_DA[t,w]*H2_prod for t=1:T))))
+    end
+    println("\n")
+
+    println("Fulfilled demand:")
+    for t=1:T
+            println("Hour $t: ", value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100), " %")
+    end
+    println("\n")
+
     println("\n")
     DA_price_df=DataFrame(DA_price,areas)
     Flows_df=DataFrame(value.(f[1, :, :]),areas)
     PG_df=DataFrame(value.(p_g[:, :]),:auto)
     PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    PW_Grid_df=DataFrame(value.(p_w_grid[:, :]),:auto)
+    PW_Grid_df=DataFrame(value.(p_w_grid_DA[:, :]),:auto)
     PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
     PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
-    PW_Grid_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w*psi_n,areas)
+    PW_Grid_zonal_df=DataFrame(value.(p_w_grid_DA[:, :])*psi_w*psi_n,areas)
 
 else
     println("No optimal solution available")
@@ -125,4 +176,3 @@ XLSX.writetable("results_step4_zonal.xlsx",
     )
 
 #*****************************************************
-=#
