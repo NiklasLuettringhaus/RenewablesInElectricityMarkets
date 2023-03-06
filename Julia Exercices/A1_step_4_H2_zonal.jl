@@ -3,6 +3,7 @@
 using JuMP
 using Gurobi
 using DataFrames
+using LinearAlgebra
 import XLSX
 
 #import Pkg; Pkg.add("XLSX")
@@ -15,8 +16,6 @@ import XLSX
 include("data_Step_4.jl")
 
 #************************************************************************
-
-
 
 #************************************************************************
 # Model
@@ -34,8 +33,8 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_w_H2_DA[t=1:T,w=1:W]>=0) #wind farm production to electrolyzer from DA
 
 @variable(FN,p_g[t=1:T,g=1:G]>=0) #power scheduled of generetor g
-@variable(FN,theta[t=1:T,n=1:N]) #voltage angle at each bus
-@variable(FN,f[t=1:T,n=1:N,m=1:N]) #DC flows between nodes n to m
+#@variable(FN,theta[t=1:T,n=1:N]) #voltage angle at each bus
+@variable(FN,f[t=1:T,a=1:A,b=1:A]) #DC flows between nodes n to m
 
 
 
@@ -48,10 +47,10 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T,w=1:W], p_w_grid_DA[t,w] + p_w_H2_DA[t,w] <= WF_prod[t,w]) #Weather-based limits constraint WF from DA market
 
 #Power Balance
-@constraint(FN, Balance[t=1:T,n=1:N], sum(p_d[t,d] for d=1:D if psi_d[d,n]==1) 
-                                + sum(f[t,n,m] for m=1:N if F[n,m]>0) 
-                                - sum(p_w_grid[t,w] for w=1:W if psi_w[w,n]==1) 
-                                - sum(p_g[t,g] for g=1:G if psi_g[g,n]==1)
+@constraint(FN, Balance[t=1:T,a=1:A], sum(p_d[t,d]*psi_d[d,n] for d=1:D, n=1:N if psi_n[n,a]==1) 
+                                + sum(f[t,a,b] for b=1:A if ATC[a,b]>0) 
+                                - sum(p_w_grid[t,w]*psi_w[w,n] for w=1:W, n=1:N if psi_n[n,a]==1) 
+                                - sum(p_g[t,g]*psi_g[g,n] for g=1:G, n=1:N if psi_n[n,a]==1)
                                 ==0)
 
 #Ramping up and down constraints
@@ -59,10 +58,11 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 
 #Power Flow constraints
-@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]<=F[n,m])    # Max Capacity of line connecting bus n to m
-@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]>=-F[n,m])   # Min Capacity of line connecting bus n to m
-@constraint(FN,[t=1:T],theta[t,1]==0)                   # Voltage angle at the reference bus
-@constraint(FN,[t=1:T,n=1:N,m=1:N], f[t,n,m]==Sys_power_base*B[n,m]*(theta[t,n]-theta[t,m])) #Power flow constraints
+#@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]<=F[n,m]) # Max Capacity of line connecting bus n to m
+#@constraint(FN,[t=1:T,n=1:N,m=1:N],f[t,n,m]>=-F[n,m]) # Min Capacity of line connecting bus n to m
+@constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]<=ATC[a,b]) # Max ATC connecting zones a to b
+@constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]>=-ATC[b,a]) # Min ATC connecting zones a to b
+@constraint(FN,[t=1:T,a=1:A,b=1:A],f[t,a,b]==-f[t,b,a]) #Symmetrical flow
 
 #Electrolyzer constraints
 @constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2_DA[t,w] <= WF_cap[w]/2)
@@ -93,8 +93,14 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Market clearing price:")
     print(DA_price)  #Print equilibrium price
     println("\n")
-    DA_price_df=DataFrame(DA_price,nodes)
-    DC_flow_df=DataFrame(value.(f[1, :, :]),nodes)
+    DA_price_df=DataFrame(DA_price,areas)
+    Flows_df=DataFrame(value.(f[1, :, :]),areas)
+    PG_df=DataFrame(value.(p_g[:, :]),:auto)
+    PD_df=DataFrame(value.(p_d[:, :]),:auto)
+    PW_Grid_df=DataFrame(value.(p_w_grid[:, :]),:auto)
+    PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
+    PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
+    PW_Grid_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w*psi_n,areas)
 
 else
     println("No optimal solution available")
@@ -103,16 +109,20 @@ end
 #************************************************************************
 
 #**************************
-if(isfile("results_step3_nodal.xlsx"))
-    rm("results_step3_nodal.xlsx")
+if(isfile("results_step4_zonal.xlsx"))
+    rm("results_step4_zonal.xlsx")
 end
 
-#=
-XLSX.writetable("results_step3_nodal.xlsx",
+XLSX.writetable("results_step4_zonal.xlsx",
     DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
-    Voltage_angle = (collect(eachcol(DC_flow_df)), names(DC_flow_df))
+    Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
+    Generation = (collect(eachcol(PG_df)), names(PG_df)),
+    Demand=(collect(eachcol(PD_df)), names(PD_df)),
+    Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
+    Zonal_Generation=(collect(eachcol(PG_zonal_df)), names(PG_zonal_df)),
+    Zonal_Demand=(collect(eachcol(PD_zonal_df)), names(PD_zonal_df)),
+    Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
     )
 
 #*****************************************************
 =#
-
