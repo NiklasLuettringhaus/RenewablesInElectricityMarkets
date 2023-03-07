@@ -104,4 +104,4 @@ end
 
 sorted_U_d = sort(U_d, rev=true)
 sorted_C_g = sort(C_g)
-bar(Demands, (sorted_U_d, sorted_C_g), xlabel="Index", ylabel="U_d", title="U_d in descending order")
+plot(Demands, [sorted_U_d, sorted_C_g], xlabel="Index", ylabel="U_d", title="U_d in descending order")

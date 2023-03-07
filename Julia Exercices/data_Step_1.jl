@@ -1,4 +1,6 @@
 #************************************************************************
+using DataFrames
+
 #PARAMETERS
 #Bid price of demand d
 U_d = [17.93875424, 24.42616924, 4.749346522, 21.18061301, 2.951325259, 11.02942244, 13.33877397, 12.30192194, 16.97765831, 22.95542703, 2.598026883, 16.71032337, 11.91189354, 16.98398964, 12.96682873, 11.388699587, 18.51956607]
@@ -27,8 +29,25 @@ G = length(C_g)
 #Number of WF
 W = 6
 
-Demands = Vector{Int64}(undef, 17)
-for d in 1:D
-    Demands[d] = 1
-end
+Demands = collect(1:D)
 #************************************************************************
+
+Generators = DataFrame(zeros(Float64, 12, 4), Colum_Names_generators)
+# Set generator index in column one
+Generators[:, 1] = collect(1:12)
+# Set generator costs in column two
+Generators[:, 2] = C_g
+# Set generator capacity in column three
+Generators[:, 3] = Cap_g
+# Sort generators by cost (second column)
+Generators = Generators[sortperm(Generators[:, 2]), :]
+# Set cumulative capacity in column four
+Generators[!, 4] = cumsum(Generators[!,:Capacity])
+# Make names for colums
+Colum_Names_generators = ["no", "Cost", "Capacity", "Cumulative Capacity"]
+
+
+bar(Generators[:,"Cumulative Capacity"], Generators[:,"Cost"], 
+    bar_width=Generators[:,"Capacity"],
+    xlabel="Cumulative Capacity", ylabel="Cost",
+    legend=false, title="Generator Cost by Cumulative Capacity")
