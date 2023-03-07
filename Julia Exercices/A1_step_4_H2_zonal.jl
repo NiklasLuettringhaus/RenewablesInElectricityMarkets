@@ -90,9 +90,11 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
 
-    println("Cost of hydrogen production: ", value(sum(DA_price[t]*p_w_H2_DA[t,w] for t=1:T, w=1:2)))
+    println("Cost of hydrogen production: ", round(value(sum(DA_price[t]*p_w_H2_DA[t,w] for t=1:T, w=1:2)), digits = 2))
+    println("Cost of up balancing: ", round(value(sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)), digits = 2))
+    println("Cost of down balancing: ", round(value(sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)), digits = 2))
     #Market clearing price
-    println("Market clearing price:")
+    #=println("Market clearing price:")
     for t=1:T
         println("Hour $t: ", value(DA_price[t])) #Print equilibrium price
     end   
@@ -139,7 +141,7 @@ if termination_status(FN) == MOI.OPTIMAL
     for t=1:T
             println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
     end
-    println("\n")
+    =#
 
     println("\n")
     DA_price_df=DataFrame(DA_price,areas)
@@ -155,7 +157,7 @@ if termination_status(FN) == MOI.OPTIMAL
     Down_Blancing_H2_df=DataFrame(value.(down_bal_w_H2[:, :]),Wind_turbines )
     Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), :auto)
     Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), :auto)
-    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), :auto)
+    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), :auto)                       #Rittersport is a lot better
 
 
 else
@@ -175,16 +177,16 @@ XLSX.writetable("results_step4_H2_zonal.xlsx",
     Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
     Generation = (collect(eachcol(PG_df)), names(PG_df)),
     Demand=(collect(eachcol(PD_df)), names(PD_df)),
-    Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
+    Wind_to_Grid=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
     Zonal_Generation=(collect(eachcol(PG_zonal_df)), names(PG_zonal_df)),
     Zonal_Demand=(collect(eachcol(PD_zonal_df)), names(PD_zonal_df)),
     Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
 
     Hydrogen_Prodcution_Day_ahead=(collect(eachcol(Hydrogen_Prodcution_Day_ahead_df)), names(Hydrogen_Prodcution_Day_ahead_df)),
-    Down_Blancing_H2=(collect(eachcol(Down_Blancing_H2_df)),names(NAME_HERE)),
-    Up_Blancing_H2=(collect(eachcol(Up_Blancing_H2_df)), names(NAME_HERE)),
-    Lindt_Curtailment=(collect(eachcol(Lindt_Curtailment_df)), names(NAME_HERE)), #no chocolate for you
-    Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(NAME_HERE)),
+    Down_Blancing_H2=(collect(eachcol(Down_Blancing_H2_df)),names(Down_Blancing_H2_df)),
+    Up_Blancing_H2=(collect(eachcol(Up_Blancing_H2_df)), names(Up_Blancing_H2_df)),
+    Lindt_Curtailment=(collect(eachcol(Lindt_Curtailment_df)), names(Lindt_Curtailment_df)), #no chocolate for you
+    Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(Load_Curtailment_df)),
 
     )
 
