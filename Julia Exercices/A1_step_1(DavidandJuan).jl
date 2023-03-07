@@ -98,43 +98,10 @@ for d in 1:D
     Demand_Dictionary[d] = (U_d[d], Cap_d[d])
 end
 
-#=
-# Sort generators by ascending order of their offer price
-sorted_generators = sort(collect(Generator_dictionary), by=x->x[2][1])
 
-# Sort demands by descending order of their offer price
-sorted_demands = sort(collect(Demand_Dictionary), by=x->-x[2][1])
+#***************
+# Plotting
 
-# Collect the sorted capacities and prices of generators and demands
-generator_capacities = [x[2][2] for x in sorted_generators]
-generator_prices = [x[2][1] for x in sorted_generators]
-demand_capacities = [x[2][2] for x in sorted_demands]
-demand_prices = [x[2][1] for x in sorted_demands]
-
-#************************************* 
-#Version 1 line graphs which suck
-
-# Compute the cumulative sum of generator and demand capacities
-cumulative_generator_capacities = cumsum(generator_capacities)
-cumulative_demand_capacities = cumsum(demand_capacities)
-
-# Plot the merit order curve
-plot(cumulative_generator_capacities, generator_prices, label="Generator", xlabel="Capacity", ylabel="Price", legend=:topleft)
-plot!(cumulative_demand_capacities, demand_prices, label="Demand")
-
-#***************************
-#Version 2 start and end points but can't merge the graphs to one
-# Compute the start and end coordinates for each generator and demand
-generator_starts = [sum(generator_capacities[1:g-1]) for g in 1:G]
-generator_ends = [sum(generator_capacities[1:g]) for g in 1:G]
-#demand_starts = [sum(demand_capacities[1:d-1]) + 1 for d in 1:G]
-#demand_ends = [sum(demand_capacities[1:g]) for g in 1:G]
-
-
-
-# Plot the merit order curve
-scatter([generator_starts, generator_ends], generator_prices )
-
-
-scatter([generator_starts; generator_ends], repeat(generator_prices, inner=[1]), label="Generator", xlabel="Capacity", ylabel="Price", legend=:topleft)
-#plot!([demand_starts; demand_ends], repeat(demand_prices, inner=[2]), label="Demand") =#
+sorted_U_d = sort(U_d, rev=true)
+sorted_C_g = sort(C_g)
+bar(Demands, (sorted_U_d, sorted_C_g), xlabel="Index", ylabel="U_d", title="U_d in descending order")

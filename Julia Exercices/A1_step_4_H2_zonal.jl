@@ -153,16 +153,16 @@ if termination_status(FN) == MOI.OPTIMAL
 
     Hydrogen_Prodcution_Day_ahead_df=DataFrame(value.(p_w_H2_DA[: , :]), Wind_turbines)
     Down_Blancing_H2_df=DataFrame(value.(down_bal_w_H2[:, :]),Wind_turbines )
-    Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), :auto)
-    Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), :auto)
-    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), :auto)
+    Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), Wind_turbines)
+    Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), vec(Loads))
+    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)
 
 
 else
     println("No optimal solution available")
 end
 
-println(Up_Blancing_H2_df)
+println(Load_Curtailment_df)
 #************************************************************************
 
 #**************************
@@ -181,10 +181,10 @@ XLSX.writetable("results_step4_H2_zonal.xlsx",
     Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
 
     Hydrogen_Prodcution_Day_ahead=(collect(eachcol(Hydrogen_Prodcution_Day_ahead_df)), names(Hydrogen_Prodcution_Day_ahead_df)),
-    Down_Blancing_H2=(collect(eachcol(Down_Blancing_H2_df)),names(NAME_HERE)),
-    Up_Blancing_H2=(collect(eachcol(Up_Blancing_H2_df)), names(NAME_HERE)),
-    Lindt_Curtailment=(collect(eachcol(Lindt_Curtailment_df)), names(NAME_HERE)), #no chocolate for you
-    Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(NAME_HERE)),
+    Down_Blancing_H2=(collect(eachcol(Down_Blancing_H2_df)), names(Down_Blancing_H2_df)),
+    Up_Blancing_H2=(collect(eachcol(Up_Blancing_H2_df)), names(Up_Blancing_H2_df)),
+    Lindt_Curtailment=(collect(eachcol(Lindt_Curtailment_df)), names(Lindt_Curtailment_df)), #no chocolate for you
+    Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(Load_Curtailment_df)),
 
     )
 

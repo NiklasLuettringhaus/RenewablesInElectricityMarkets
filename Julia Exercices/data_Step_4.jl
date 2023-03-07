@@ -123,7 +123,7 @@ WF_prod_rt = [5.76690648 137.07907155 7.656024222 7.152815820000001 40.800866235
 WF_error = WF_prod - WF_prod_rt
 
 #***************************************
-#             DO NOOT TOUCH THIS WILL GENERATE A NEW ACTUAL PRODUCTION OF ALL WINDFARMS SO DO NOT DUCKING TOUCH
+#   DO NOOT TOUCH THIS WILL GENERATE A NEW ACTUAL PRODUCTION OF ALL WINDFARMS SO DO NOT DUCKING TOUCH
 #***************************************
 #=
 WF_prod_rt = zeros(24,6)
@@ -154,6 +154,12 @@ Hours_in_day = string.([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
 #Number of wind turbines
  W = 6
  Wind_turbines = string.(["W1","W2","W3","W4","W5","W6"])
+ 
+ Loads = Array{String}(undef, 17 , 1)
+ for d in 1 : size(U_d, 2)
+    Loads[d] = "Load $(d)"
+ end
+Loads
 
 #Outputs
 DA_price = zeros(T)
