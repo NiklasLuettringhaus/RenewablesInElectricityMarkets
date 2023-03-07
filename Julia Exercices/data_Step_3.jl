@@ -220,7 +220,7 @@ B[22,21]=500;
 #Capacity matrix from node n (row) to node m (column)
 
 F=[
-    0	175	175	0	350	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
+0	175	175	0	350	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
 175	0	0	175	0	175	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
 175	0	0	0	0	0	0	0	175	0	0	0	0	0	0	0	0	0	0	0	0	0	0	400;
 0	175	0	0	0	0	0	0	175	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
@@ -287,49 +287,3 @@ psi_w[1,3]=1;
 psi_w[2,5]=1;
 psi_w[3,16]=1;
 psi_w[4,21]=1;
-psi_w[5,16]=1;
-psi_w[6,21]=1;
-
-psi_n= zeros(N, A) #location of the node n in the area a
-psi_n[1,2]=1;
-psi_n[2,2]=1;
-psi_n[3,2]=1;
-psi_n[4,2]=1;
-psi_n[5,2]=1;
-psi_n[6,3]=1;
-psi_n[7,3]=1;
-psi_n[8,3]=1;
-psi_n[9,2]=1;
-psi_n[10,3]=1;
-psi_n[11,2]=1;
-psi_n[12,3]=1;
-psi_n[13,1]=1;
-psi_n[14,1]=1;
-psi_n[15,1]=1;
-psi_n[16,1]=1;
-psi_n[17,1]=1;
-psi_n[18,1]=1;
-psi_n[19,1]=1;
-psi_n[20,1]=1;
-psi_n[21,1]=1;
-psi_n[22,1]=1;
-psi_n[23,1]=1;
-psi_n[24,2]=1;
-
-
-#=ATC=zeros(A, A)
-for a in 1:A
-    for b in 2:A
-    ATC[a,b]= sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 if psi_n[m,b]==1)
-    end
-end =#
-
-
-ATC=zeros(A, A)
-for a=1:A
-    for b=1:A
-        ATC[a,b]=sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
-        #ATC[a,b]=0.2*sum(F[n,m] for n=1:N,m=1:N if psi_n[n,a]==1 && psi_n[m,b]==1)
-    end
-end
-ATC[diagind(ATC)[1:A]] .= 0 #Set all the diagonal elements to zero

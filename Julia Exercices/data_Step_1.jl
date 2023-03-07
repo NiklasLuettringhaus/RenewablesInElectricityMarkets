@@ -26,4 +26,9 @@ D = length(U_d)
 G = length(C_g)
 #Number of WF
 W = 6
+
+Demands = Vector{Int64}(undef, 17)
+for d in 1:D
+    Demands[d] = 1
+end
 #************************************************************************
