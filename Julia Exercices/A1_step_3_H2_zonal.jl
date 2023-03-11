@@ -99,11 +99,11 @@ end
 #************************************************************************
 
 #**************************
-if(isfile("results_step3_nodal.xlsx"))
-    rm("results_step3_nodal.xlsx")
+if(isfile("results_step3_zonal.xlsx"))
+    rm("results_step3_zonal.xlsx")
 end
 
-XLSX.writetable("results_step3_nodal.xlsx",
+XLSX.writetable("results_step3_zonal.xlsx",
     DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
     Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
     Generation = (collect(eachcol(PG_df)), names(PG_df)),

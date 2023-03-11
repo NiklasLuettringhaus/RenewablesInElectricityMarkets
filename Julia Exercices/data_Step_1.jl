@@ -18,7 +18,7 @@ Cap_g = [152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350]
 WF_cap = [150, 150, 10, 20, 50, 30]
 WF_forecast = [0.384460432	0.507700265	0.464001468	0.476854388	0.480010191	0.354536609]
 
-WF_prod =  WF_cap* WF_forecast
+WF_prod =  WF_cap'.* WF_forecast
 
 #maximum load of demand 
 Cap_d = [67.48173, 60.37839, 111.877605, 46.17171, 44.395875, 85.24008, 78.13674, 106.5501, 108.325935, 120.75678, 165.152655, 120.75678, 197.117685, 62.154225, 207.772695, 113.65344, 79.912575]
@@ -31,7 +31,7 @@ W = 6
 
 Demands = collect(1:D)
 #************************************************************************
-
+#=
 Generators = DataFrame(zeros(Float64, 12, 4), Colum_Names_generators)
 # Set generator index in column one
 Generators[:, 1] = collect(1:12)
@@ -51,3 +51,4 @@ bar(Generators[:,"Cumulative Capacity"], Generators[:,"Cost"],
     bar_width=Generators[:,"Capacity"],
     xlabel="Cumulative Capacity", ylabel="Cost",
     legend=false, title="Generator Cost by Cumulative Capacity")
+    =#
