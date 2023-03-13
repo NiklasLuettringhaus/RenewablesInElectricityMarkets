@@ -157,7 +157,7 @@ if termination_status(FN) == MOI.OPTIMAL
     Down_Blancing_H2_df=DataFrame(value.(down_bal_w_H2[:, :]),Wind_turbines )
     Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), Wind_turbines)
     Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), vec(Loads))
-    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)
+    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)                   #Rittersport is better anyway
 
 
 else
