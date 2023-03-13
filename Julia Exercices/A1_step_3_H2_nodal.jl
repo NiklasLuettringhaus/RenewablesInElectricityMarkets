@@ -85,7 +85,7 @@ if termination_status(FN) == MOI.OPTIMAL
     PG_df=DataFrame(value.(p_g[:, :]),:auto)
     PD_df=DataFrame(value.(p_d[:, :]),:auto)
     PW_Grid_df=DataFrame(value.(p_w_grid[:, :]),:auto)
-    PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,nodes)
+    PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_g,nodes)
     PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_d,nodes)
     PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
 else
