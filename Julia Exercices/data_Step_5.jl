@@ -4,7 +4,7 @@
 using StatsBase
 using CSV
 using LinearAlgebra
-
+W = 6
 U_d = [
 3.88	4.65	14.61	22.59	36.93	45.00	16.37	32.82	22.61	38.34	13.74	17.00	6.41	19.58	3.54	16.53	47.94
 3.18	28.43	11.42	16.25	22.07	49.73	15.58	8.55	9.05	0.72	18.64	31.17	38.30	20.69	28.92	41.52	19.66
@@ -37,25 +37,7 @@ U_d = [
 #Offer prices of generator g
 C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 10, 10.52, 10.89]
 
-#Down and up Reserve prices for generator G
-c_res_g = [0.34, 1.25, 0.3, 0.18, 1.18, 0.11, 0.27, 1.1, 0.06, 1.86, 1.34, 0.24]
 
-#= Generating random prices for reserve
-c_res_g= zeros(G)
-for g=1:G
-    c_res_g[g]=rand(0:200)/100
-end
-=#
-
-#Up ad upper Reserve for electrolyzer W
-c_res_e= [1.35, 0.32]
-
-#=Generating random prices for reserve
-c_res_e= zeros(2)
-for w=1:2
-    c_res_e[w]=rand(0:250)/100
-end
-=#
 
 #Startup Cost of generator
 C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
@@ -199,7 +181,6 @@ G = length(C_g)
 T = size(U_d, 1)
 Hours_in_day = string.([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24])
 #Number of wind turbines
- W = 6
  Wind_turbines = string.(["W1","W2","W3","W4","W5","W6"])
  
  Loads = Array{String}(undef, 17 , 1)
@@ -520,3 +501,24 @@ rt_wind = [
 1.9
 1.95
 2]
+
+
+#Down and up Reserve prices for generator G
+c_res_g = [0.34, 1.25, 0.3, 0.18, 1.18, 0.11, 0.27, 1.1, 0.06, 1.86, 1.34, 0.24]
+
+#= Generating random prices for reserve
+c_res_g= zeros(G)
+for g=1:G
+    c_res_g[g]=rand(0:200)/100
+end
+=#
+
+#Up ad upper Reserve for electrolyzer W
+c_res_e= [1.35, 0.32]
+
+#=Generating random prices for reserve
+c_res_e= zeros(2)
+for w=1:2
+    c_res_e[w]=rand(0:250)/100
+end
+=#
