@@ -34,13 +34,13 @@ FN = Model(Gurobi.Optimizer)
 )
 
 #Capacity Limits
-@constraint(FN,[t=1:T], sum(up_g[t,g] + up_e[t,w] for g=1:G, w=1:2) == Cap_d[t,d]*0.2)      #up reserve requirements     
-@constraint(FN,[t=1:T], sum(down_g[t,g] + down_e[t,w] for g=1:G, w=1:2) == Cap_d[t,d]*0.15) #up reserve  limits constraint
+@constraint(FN,[t=1:T, d=1:D], sum(up_g[t,g] + up_e[t,w] for g=1:G, w=1:2) == Cap_d[t,d]*0.2)      #up reserve requirements     
+@constraint(FN,[t=1:T, d=1:D], sum(down_g[t,g] + down_e[t,w] for g=1:G, w=1:2) == Cap_d[t,d]*0.15) #up reserve  limits constraint
 
 @constraint(FN,[t=1:T,g=1:G], up_g[t,g] <= Cap_g[g])        #Generation limits constraint
 @constraint(FN,[t=1:T,g=1:G], down_g[t,g] <= Cap_g[g])      #Generation limits constraint
-@constraint(FN,[t=1:T,w=1:W], up_e[t,w] <= WF_cap[t,w]/2)   #capacity-based limits constraint WF
-@constraint(FN,[t=1:T,w=1:W], down_e[t,w] <= WF_cap[t,w]/2) #capacity-based limits constraint WF
+@constraint(FN,[t=1:T,w=1:2], up_e[t,w] <= WF_cap[w]/2)   #capacity-based limits constraint WF
+@constraint(FN,[t=1:T,w=1:2], down_e[t,w] <= WF_cap[w]/2) #capacity-based limits constraint WF
 
 #=
 #Ramping up and down constraints
