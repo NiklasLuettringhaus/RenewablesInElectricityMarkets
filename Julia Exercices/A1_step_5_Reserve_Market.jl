@@ -118,10 +118,13 @@ if termination_status(FN) == MOI.OPTIMAL
     
     =#
     println("\n")
-    Up_Gen=DataFrame(value.(up_g),Up_Gen)
-    Down_Gen=DataFrame(value.(down_g),Down_Gen)
-    Up_El=DataFrame(value.(up_g),Up_El)
-    Down_El=DataFrame(value.(down_g),Down_El)
+    Up_Gen=DataFrame(value.(up_g[:,:]), :auto)
+    Down_Gen=DataFrame(value.(down_g[:,:]), :auto)
+    Up_El=DataFrame(value.(up_e[:,:]), :auto)
+    Down_El=DataFrame(value.(down_e[:,:]), :auto)
+
+    show(Up_El)
+    show(Down_El)
 
 else
     println("No optimal solution available")
