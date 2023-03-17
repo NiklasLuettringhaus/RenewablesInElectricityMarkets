@@ -77,11 +77,11 @@ end
 #************************************************************************
 
 #**************************
-if(isfile("results_step3_nodal.xlsx"))
-    rm("results_step3_nodal.xlsx")
+if(isfile("results_step3_normal.xlsx"))
+    rm("results_step3_normal.xlsx")
 end
 
-XLSX.writetable("results_step3_nodal.xlsx",
+XLSX.writetable("results_step3_normal.xlsx",
     DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
     Voltage_angle = (collect(eachcol(DC_flow_df)), names(DC_flow_df))
     )

@@ -167,7 +167,7 @@ else
 
 end
 
-#=
+
 println(Down_Blancing_df)
 #************************************************************************
 
@@ -188,5 +188,5 @@ XLSX.writetable("results_step4_2.xlsx",
     Up_Blancing=(collect(eachcol(Up_Blancing_df)), names(Up_Blancing_df)),
 
     )
-=#
+
 #*****************************************************
