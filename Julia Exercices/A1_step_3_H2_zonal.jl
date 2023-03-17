@@ -80,6 +80,8 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
+    Profit_gen=value.(p_g).*(DA_price*(psi_g*psi_n)')-value.(p_g).*(repeat(C_g, inner=[1, 24])')
+    Profit_wind=value.(p_w_grid).*(DA_price*(psi_w*psi_n)')
     println("Market clearing price:")
     print(DA_price)  #Print equilibrium price
     println("\n")
@@ -94,6 +96,8 @@ if termination_status(FN) == MOI.OPTIMAL
     Flows_1=DataFrame(value.(f[:, 1, :]),:auto)
     Flows_2=DataFrame(value.(f[:, 2, :]),:auto)
     Flows_3=DataFrame(value.(f[:, 3, :]),:auto)
+    Profit_gen_df=DataFrame(Profit_gen,:auto)
+    Profit_wind_df=DataFrame(Profit_wind,:auto)
 
 #Gen_zonal_df=DataFrame(psi_g*psi_n,:auto)
 else
@@ -119,6 +123,8 @@ XLSX.writetable("results_step3_zonal.xlsx",
     Zonal_Generation=(collect(eachcol(PG_zonal_df)), names(PG_zonal_df)),
     Zonal_Demand=(collect(eachcol(PD_zonal_df)), names(PD_zonal_df)),
     Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
+    Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
+    Profit_wind=(collect(eachcol(Profit_wind_df)), names(Profit_wind_df)),
     )
 
 #*****************************************************

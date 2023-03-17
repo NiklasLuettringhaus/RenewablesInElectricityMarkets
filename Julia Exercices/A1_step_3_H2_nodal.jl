@@ -77,6 +77,8 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
+    Profit_gen=value.(p_g).*(DA_price*(psi_g)')-value.(p_g).*(repeat(C_g, inner=[1, 24])')
+    Profit_wind=value.(p_w_grid).*(DA_price*(psi_w)')
     println("Market clearing price:")
     print(DA_price)  #Print equilibrium price
     println("\n")
@@ -88,6 +90,8 @@ if termination_status(FN) == MOI.OPTIMAL
     PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_g,nodes)
     PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_d,nodes)
     PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
+    Profit_gen_df=DataFrame(Profit_gen,:auto)
+    Profit_wind_df=DataFrame(Profit_wind,:auto)
 else
     println("No optimal solution available")
 end
@@ -108,6 +112,8 @@ XLSX.writetable("results_step3_nodal.xlsx",
     Nodal_Generation=(collect(eachcol(PG_nodal_df)), names(PG_nodal_df)),
     Nodal_Demand=(collect(eachcol(PD_nodal_df)), names(PD_nodal_df)),
     Nodal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
+    Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
+    Profit_wind=(collect(eachcol(Profit_wind_df)), names(Profit_wind_df))
     )
 
 #*****************************************************
