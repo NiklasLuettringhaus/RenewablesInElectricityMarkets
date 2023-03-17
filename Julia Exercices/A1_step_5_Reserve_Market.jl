@@ -48,7 +48,6 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 =#
 
-#print(FN) #print model to screen (only usable for small models)
 
 #************************************************************************
 
@@ -117,53 +116,29 @@ if termination_status(FN) == MOI.OPTIMAL
             println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
     end
     
-
+    =#
     println("\n")
-    DA_price_df=DataFrame(DA_price,areas)
-    Flows_df=DataFrame(value.(f[1, :, :]),areas)
-    PG_df=DataFrame(value.(p_g[:, :]),:auto)
-    PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    PW_Grid_df=DataFrame(value.(p_w_grid_DA[:, :]),:auto)
-    PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
-    PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
-    PW_Grid_zonal_df=DataFrame(value.(p_w_grid_DA[:, :])*psi_w*psi_n,areas)
+    Up_Gen=DataFrame(value.(up_g),Up_Gen)
+    Down_Gen=DataFrame(value.(down_g),Down_Gen)
+    Up_El=DataFrame(value.(up_g),Up_El)
+    Down_El=DataFrame(value.(down_g),Down_El)
 
-    Hydrogen_Prodcution_Day_ahead_df=DataFrame(value.(p_w_H2_DA[: , :]), Wind_turbines)
-    Down_Blancing_H2_df=DataFrame(value.(down_bal_w_H2[:, :]),Wind_turbines )
-    Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), Wind_turbines)
-    Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), vec(Loads))
-    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)                   #Rittersport is better anyway
-
-=#
 else
     println("No optimal solution available")
 end
-#=
-println(Load_Curtailment_df)
+
 #************************************************************************
 
 #**************************
 
-if(isfile("results_step4_zonal.xlsx"))
-    rm("results_step4_zonal.xlsx")
+if(isfile("results_step5_reserve.xlsx"))
+    rm("results_step5_reserve.xlsx")
 end
 
-XLSX.writetable("results_step4_H2_zonal.xlsx",
-    DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
-    Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
-    Generation = (collect(eachcol(PG_df)), names(PG_df)),
-    Demand=(collect(eachcol(PD_df)), names(PD_df)),
-    Wind_to_Grid=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
-    Zonal_Generation=(collect(eachcol(PG_zonal_df)), names(PG_zonal_df)),
-    Zonal_Demand=(collect(eachcol(PD_zonal_df)), names(PD_zonal_df)),
-    Zonal_Wind=(collect(eachcol(PW_Grid_zonal_df)), names(PW_Grid_zonal_df)),
-
-    Hydrogen_Prodcution_Day_ahead=(collect(eachcol(Hydrogen_Prodcution_Day_ahead_df)), names(Hydrogen_Prodcution_Day_ahead_df)),
-    Down_Blancing_H2=(collect(eachcol(Down_Blancing_H2_df)), names(Down_Blancing_H2_df)),
-    Up_Blancing_H2=(collect(eachcol(Up_Blancing_H2_df)), names(Up_Blancing_H2_df)),
-    Lindt_Curtailment=(collect(eachcol(Lindt_Curtailment_df)), names(Lindt_Curtailment_df)), #no chocolate for you
-    Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(Load_Curtailment_df)),
-
+XLSX.writetable("results_step5_reserve.xlsx",
+    Up_Gen = (collect(eachcol(Up_Gen)), names(Up_Gen)),
+    Down_Gen = (collect(eachcol(Down_Gen)), names(Down_Gen)),
+    Up_El = (collect(eachcol(Up_El)), names(Up_El)),
+    Down_El = (collect(eachcol(Down_El)), names(Down_El)),
     )
-=#
 #*****************************************************
