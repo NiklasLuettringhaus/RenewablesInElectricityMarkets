@@ -1,5 +1,7 @@
 #************************************************************************
 using DataFrames
+using Plots
+using CSV
 
 #PARAMETERS
 #Bid price of demand d
@@ -31,7 +33,7 @@ W = 6
 
 Demands = collect(1:D)
 #************************************************************************
-#=
+#=Colum_Names_generators = ["no", "Cost", "Capacity", "Cumulative Capacity"]
 Generators = DataFrame(zeros(Float64, 12, 4), Colum_Names_generators)
 # Set generator index in column one
 Generators[:, 1] = collect(1:12)
@@ -44,11 +46,12 @@ Generators = Generators[sortperm(Generators[:, 2]), :]
 # Set cumulative capacity in column four
 Generators[!, 4] = cumsum(Generators[!,:Capacity])
 # Make names for colums
-Colum_Names_generators = ["no", "Cost", "Capacity", "Cumulative Capacity"]
+Generators
 
 
-bar(Generators[:,"Cumulative Capacity"], Generators[:,"Cost"], 
+CSV.write("/Users/niklasluttringhaus/Desktop\\Generators.csv", Generators)
+
+bar(Generators["Cumulative Capacity"], Generators[:,"Cost"], 
     bar_width=Generators[:,"Capacity"],
     xlabel="Cumulative Capacity", ylabel="Cost",
     legend=false, title="Generator Cost by Cumulative Capacity")
-    =#

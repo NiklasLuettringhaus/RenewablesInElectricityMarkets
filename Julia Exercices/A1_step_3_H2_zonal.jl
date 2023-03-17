@@ -91,6 +91,10 @@ if termination_status(FN) == MOI.OPTIMAL
     PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
     PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
     PW_Grid_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w*psi_n,areas)
+    Flows_1=DataFrame(value.(f[:, 1, :]),:auto)
+    Flows_2=DataFrame(value.(f[:, 2, :]),:auto)
+    Flows_3=DataFrame(value.(f[:, 3, :]),:auto)
+
 #Gen_zonal_df=DataFrame(psi_g*psi_n,:auto)
 else
     println("No optimal solution available")
@@ -106,6 +110,9 @@ end
 XLSX.writetable("results_step3_zonal.xlsx",
     DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
     Flows = (collect(eachcol(Flows_df)), names(Flows_df)),
+    Flows_1 = (collect(eachcol(Flows_1)), names(Flows_1)),
+    Flows_2 = (collect(eachcol(Flows_2)), names(Flows_2)),
+    Flows_3 = (collect(eachcol(Flows_3)), names(Flows_3)),
     Generation = (collect(eachcol(PG_df)), names(PG_df)),
     Demand=(collect(eachcol(PD_df)), names(PD_df)),
     Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
