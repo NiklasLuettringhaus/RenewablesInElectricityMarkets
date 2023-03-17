@@ -53,11 +53,13 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[w=1:2], sum(p_w_H2_DA[w]*H2_prod for t=1:T) >= H2_cap)
 
 #Balancing action
-@constraint(FN, [w=1:W; outage_sum >= 0], outage_sum == sum(down_bal[g] for g=1:G))    #down balancing action of electrolyzer needs to match WF error
-@constraint(FN, [w=1:W; outage_sum < 0], abs(outage_sum) == sum(up_bal[g] for g=1:G))  #up balancing action of electrolyzer needs to match WF error
+#@constraint(FN, [w=1:W; outage_sum >= 0], outage_sum == sum(down_bal[g] for g=1:G))    #down balancing action of electrolyzer needs to match WF error
+#@constraint(FN, [w=1:W; outage_sum < 0], abs(outage_sum) == sum(up_bal[g] for g=1:G))  #up balancing action of electrolyzer needs to match WF error
+@constraint(FN, [w=1:W], outage_sum == sum(down_bal[g] for g=1:G) - sum(up_bal[g] for g=1:G))
 @constraint(FN, p_g[9] == Cap_g[9])
 @constraint(FN, down_bal[9] == 0)
 @constraint(FN, up_bal[9] == 0)
+
 
 #print(FN) #print model to screen (only usable for small models)
 

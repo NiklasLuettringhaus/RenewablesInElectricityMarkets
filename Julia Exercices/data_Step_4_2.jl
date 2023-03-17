@@ -131,7 +131,7 @@ WF_prod_rt = [131.86491426 115.25229555 9.5557102245 19.191240432 19.10746185 20
 
 WF_error = WF_prod - WF_prod_rt
 
-outage_sum = sum(WF_error[1,w] for w=1:W) - 400
+outage_sum = sum(WF_error[1,w] for w=1:W) - Cap_g[9]
 
 #***************************************
 #   DO NOOT TOUCH THIS WILL GENERATE A NEW ACTUAL PRODUCTION OF ALL WINDFARMS SO DO NOT DUCKING TOUCH
