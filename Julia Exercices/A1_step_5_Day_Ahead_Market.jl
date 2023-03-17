@@ -39,6 +39,7 @@ FN = Model(Gurobi.Optimizer)
 
 #Capacity Limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
+
 @constraint(FN,[t=1:T,g=1:G], Down_Res_Gen[t,g] <= p_g[t,g] <= Cap_g[g] - Up_Res_Gen[t,g]) #Generation limits constraint
 @constraint(FN,[t=1:T,w=1:W], p_w_grid_DA[t,w] + p_w_H2_DA[t,w] <= WF_prod[t,w]) #Weather-based limits constraint WF from DA market
 @constraint(FN,[t=1:T,w=1:2], Down_Res_El[t,w] <= p_w_H2_DA[t,w] <= WF_cap[w]/2 - Up_Res_El[t,w]) # Electrolyzer can maximum do max capacity - reserve and must do min reserve down
@@ -47,12 +48,12 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN, Balance[t=1:T], sum(p_d[t,d] for d=1:D) - sum(p_w_grid_DA[t,w] for w=1:W) - sum(p_g[t,g] for g=1:G)==0) #Power balance constraint
 
 #Ramping up and down constraints
-#@constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) + Ramp_g_u[g]) #ramp up constraint
-#@constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
+@constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) + Ramp_g_u[g]) #ramp up constraint
+@constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 
 #Electrolyzer constraints
-#@constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2_DA[t,w] <= WF_cap[w]/2)
-#@constraint(FN,[t=1:T, w=1:2], sum(p_w_H2_DA[t,w]*H2_prod for t=1:T) >= H2_cap)
+@constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2_DA[t,w] <= WF_cap[w]/2)
+@constraint(FN,[t=1:T, w=1:2], sum(p_w_H2_DA[t,w]*H2_prod for t=1:T) >= H2_cap)
 
 #print(FN) #print model to screen (only usable for small models)
 
@@ -71,11 +72,12 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
 
-    println("Cost of hydrogen production: ", round(value(sum(DA_price[t]*p_w_H2_DA[t,w] for t=1:T, w=1:2)), digits = 2))
-    println("Cost of up balancing: ", round(value(sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)), digits = 2))
-    println("Cost of down balancing: ", round(value(sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)), digits = 2))
+    #println("Cost of hydrogen production: ", round(value(sum(DA_price[t]*p_w_H2_DA[t,w] for t=1:T, w=1:2)), digits = 2))
+    #println("Cost of up balancing: ", round(value(sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)), digits = 2))
+    #println("Cost of down balancing: ", round(value(sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)), digits = 2))
     #Market clearing price
-    #=println("Market clearing price:")
+    
+    println("Market clearing price:")
     for t=1:T
         println("Hour $t: ", value(DA_price[t])) #Print equilibrium price
     end   
@@ -93,7 +95,7 @@ if termination_status(FN) == MOI.OPTIMAL
     end
     println("\n")
 
-    println("Daily demand:")
+    println("Hourly demand:")
     for d=1:D
         println("D$d: ", round(Int,value(sum(p_d[t,d] for t=1:T))))
     end
@@ -120,31 +122,13 @@ if termination_status(FN) == MOI.OPTIMAL
 
     println("Fulfilled demand:")
     for t=1:T
-            println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
+            println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[t,d] for d=1:D))*100),digits=2), "%")
     end
-  
-
-    println("\n")
-    DA_price_df=DataFrame(DA_price,areas)
-    Flows_df=DataFrame(value.(f[1, :, :]),areas)
-    PG_df=DataFrame(value.(p_g[:, :]),:auto)
-    PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    PW_Grid_df=DataFrame(value.(p_w_grid_DA[:, :]),:auto)
-    PG_zonal_df=DataFrame(value.(p_g[:, :])*psi_g*psi_n,areas)
-    PD_zonal_df=DataFrame(value.(p_d[:, :])*psi_d*psi_n,areas)
-    PW_Grid_zonal_df=DataFrame(value.(p_w_grid_DA[:, :])*psi_w*psi_n,areas)
-
-    Hydrogen_Prodcution_Day_ahead_df=DataFrame(value.(p_w_H2_DA[: , :]), Wind_turbines)
-    Down_Blancing_H2_df=DataFrame(value.(down_bal_w_H2[:, :]),Wind_turbines )
-    Up_Blancing_H2_df=DataFrame(value.(up_bal_w_H2[:, :]), Wind_turbines)
-    Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), vec(Loads))
-    Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)                   #Rittersport is better anyway
-
-    =#
 
 else
     println("No optimal solution available")
 end
+
 #=
 println(Load_Curtailment_df)
 #************************************************************************

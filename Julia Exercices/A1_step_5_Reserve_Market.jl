@@ -63,21 +63,25 @@ println("Termination status: $(termination_status(FN))")
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
+println("*****************************************")  
+println(value.(down_e))
+
 
 Up_Gen=DataFrame(value.(up_g[:,:]), :auto)
 Down_Gen=DataFrame(value.(down_g[:,:]), :auto)
 Up_El=DataFrame(value.(up_e[:,:]), :auto)
 Down_El=DataFrame(value.(down_e[:,:]), :auto)
-println("/n Up reserve generators")
+println(" Up reserve generators")
 print(Up_Gen)
-println("/n Down reserve generators")
+println("Down reserve generators")
 print(Down_Gen)
-println(" /n Up reserve hydrolysers")
+println("Up reserve hydrolysers")
 print(Up_El)
-println(" /n Downs reserve hydrolysers")
+println("Downs reserve hydrolysers")
 print(Down_El)
 
-    
+
+
 
 else
     println("No optimal solution available")
