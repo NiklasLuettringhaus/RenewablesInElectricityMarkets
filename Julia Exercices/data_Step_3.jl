@@ -31,10 +31,8 @@ U_d = [
 44.67	41.34	40.53	42.10	39.08	46.67	17.37	7.68	26.60	5.07	43.51	0.79	46.41	0.03	16.38	9.91	39.35
 ]
 
-
 #Offer prices of generator g
 C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 10, 10.52, 10.89]
-
 
 #Startup Cost of generator
 C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
@@ -121,7 +119,7 @@ D = size(U_d, 2)
 
 G = length(C_g)
 
-#Hours in a day
+#Hours in a day 
 T = size(U_d, 1)
 
 #Number of wind turbines
