@@ -36,7 +36,7 @@ FN = Model(Gurobi.Optimizer)
             - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)) # Production cost + start-up cost conventional generator
 
 #Capacity Limits
-@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
+@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[t=1:T,w=1:W], p_w_grid[t,w] + p_w_H2[t,w] <= WF_prod[t,w]) #Weather-based limits constraint WF
 
