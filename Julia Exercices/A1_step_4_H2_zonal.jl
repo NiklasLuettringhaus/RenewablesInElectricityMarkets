@@ -43,7 +43,7 @@ FN = Model(Gurobi.Optimizer)
             - sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
 
 #Capacity Limits
-@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
+@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
 @constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[t=1:T,w=1:W], p_w_grid_DA[t,w] + p_w_H2_DA[t,w] <= WF_prod[t,w]) #Weather-based limits constraint WF from DA market
 
@@ -139,7 +139,7 @@ if termination_status(FN) == MOI.OPTIMAL
 
     println("Fulfilled demand:")
     for t=1:T
-            println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
+            println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[t,d] for d=1:D))*100),digits=2), "%")
     end
     =#
 

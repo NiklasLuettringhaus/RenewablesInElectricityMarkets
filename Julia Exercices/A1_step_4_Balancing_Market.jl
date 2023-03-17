@@ -39,7 +39,7 @@ FN = Model(Gurobi.Optimizer)
             - sum(down_bal[g]*(DA_price-0.15*C_g[g]) for g=1:G))    #cost for downbalancing > increasing consumption
 
 #Capacity Limits
-@constraint(FN,[d=1:D], p_d[d] <= Cap_d[d]) #Demand limits constraint
+@constraint(FN,[d=1:D], p_d[d] <= Cap_d[t,d]) #Demand limits constraint
 #@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[g=1:G], p_g[g] + up_bal[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[g=1:G], p_g[g] - down_bal[g] >= 0) #Generation limits constraint
@@ -146,7 +146,7 @@ if termination_status(FN) == MOI.OPTIMAL
     println("\n")
 
     println("Fulfilled demand:")
-    println(round(value((sum(p_d[d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
+    println(round(value((sum(p_d[d] for d=1:D)/sum(Cap_d[t,d] for d=1:D))*100),digits=2), "%")
 
     println("\n")
     
