@@ -119,7 +119,7 @@ D = size(U_d, 2)
 
 G = length(C_g)
 
-#Hours in a day 
+#Hours in a day
 T = size(U_d, 1)
 
 #Number of wind turbines

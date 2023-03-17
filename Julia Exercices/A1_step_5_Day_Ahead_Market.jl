@@ -13,7 +13,7 @@ import XLSX
 
 #************************************************************************
 #PARAMETERS
-include("data_Step_5.jl")
+include("data_Step_5_Day_Ahead_Market.jl")
 
 #************************************************************************
 
@@ -29,36 +29,30 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_g[t=1:T,g=1:G]>=0) #power scheduled of generetor g
 
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)              #Revenue from demand
-            - sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
             - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)                      #Production cost + start-up cost conventional generator
 
-            - sum(up_g[t,g] * c_res_g[g] for t=1:T, g=1:G)
-            - sum(up_e[t,w] * c_res_e[w] for t=1:T, w=1:2)
-            - sum(down_e[t,w] * c_res_e[w] for t=1:T, w=1:2)
+#            - sum(up_g[t,g] * c_res_g[g] for t=1:T, g=1:G)
+#            - sum(down_g[t,g] * c_res_g[g] for t=1:T, g=1:G)
+#            - sum(up_e[t,w] * c_res_e[w] for t=1:T, w=1:2)
+#            - sum(down_e[t,w] * c_res_e[w] for t=1:T, w=1:2)
 )
 
 #Capacity Limits
-@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[d]) #Demand limits constraint
-@constraint(FN,[t=1:T,g=1:G], up_g[t,g] < p_g[t,g] <= Cap_g[g] - down_g[t,g]) #Generation limits constraint
+@constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
+@constraint(FN,[t=1:T,g=1:G], Down_Res_Gen[t,g] <= p_g[t,g] <= Cap_g[g] - Up_Res_Gen[t,g]) #Generation limits constraint
 @constraint(FN,[t=1:T,w=1:W], p_w_grid_DA[t,w] + p_w_H2_DA[t,w] <= WF_prod[t,w]) #Weather-based limits constraint WF from DA market
-@constraint(FN,[t=1:T,w=1:2], down_e[t,w] <= p_w_H2_DA[t,w] <= WF_cap[w]/2 - up_e[t,w]) # Electrolyzer can maximum do max capacity - reserve and must do min reserve down
+@constraint(FN,[t=1:T,w=1:2], Down_Res_El[t,w] <= p_w_H2_DA[t,w] <= WF_cap[w]/2 - Up_Res_El[t,w]) # Electrolyzer can maximum do max capacity - reserve and must do min reserve down
 
 #Power Balance
-@constraint(FN, Balance[t=1:T], sum(p_d[t,d] for d=1:D) - sum(p_w_grid[t,w] for w=1:W) - sum(p_g[t,g] for g=1:G)==0) #Power balance constraint
+@constraint(FN, Balance[t=1:T], sum(p_d[t,d] for d=1:D) - sum(p_w_grid_DA[t,w] for w=1:W) - sum(p_g[t,g] for g=1:G)==0) #Power balance constraint
 
 #Ramping up and down constraints
-@constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) + Ramp_g_u[g]) #ramp up constraint
-@constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
+#@constraint(FN,[t=1:T,g=1:G], p_g[t,g] <= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) + Ramp_g_u[g]) #ramp up constraint
+#@constraint(FN,[t=1:T,g=1:G], p_g[t,g] >= (t-1<1 ? Cap_g_init[g] : p_g[t-1,g]) - Ramp_g_d[g]) #ramp down constraint
 
 #Electrolyzer constraints
-@constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2_DA[t,w] <= WF_cap[w]/2)
-@constraint(FN,[t=1:T, w=1:2], sum(p_w_H2_DA[t,w]*H2_prod for t=1:T) >= H2_cap)
-
-#Balancing action
-@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) >= 0], sum(WF_error[t,w] for w=1:W) == sum(wind_cur[t,w] for w=1:W) + sum(down_bal_w_H2[t,w] for w=1:2))    #down balancing action of electrolyzer needs to match WF error
-@constraint(FN,[t=1:T; sum(WF_error[t,w] for w=1:W) < 0], abs(sum(WF_error[t,w] for w=1:W)) == sum(load_cur[t,d] for d=1:D) + sum(up_bal_w_H2[t,w] for w=1:2))  #up balancing action of electrolyzer needs to match WF error
-@constraint(FN,[t=1:T, w=1:2], -up_bal_w_H2[t,w] <= p_w_H2_DA[t,w] - 0.01*(WF_cap[w]/2))                    #maximum up balancing
-@constraint(FN,[t=1:T, w=1:2], down_bal_w_H2[t,w] <= WF_cap[w]/2 - p_w_H2_DA[t,w])                          #maximum down balancing
+#@constraint(FN,[t=1:T, w=1:2], 0.01*(WF_cap[w]/2) <= p_w_H2_DA[t,w] <= WF_cap[w]/2)
+#@constraint(FN,[t=1:T, w=1:2], sum(p_w_H2_DA[t,w]*H2_prod for t=1:T) >= H2_cap)
 
 #print(FN) #print model to screen (only usable for small models)
 
@@ -128,7 +122,7 @@ if termination_status(FN) == MOI.OPTIMAL
     for t=1:T
             println("Hour $t: ", round(value((sum(p_d[t,d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
     end
-    =#
+  
 
     println("\n")
     DA_price_df=DataFrame(DA_price,areas)
@@ -146,11 +140,12 @@ if termination_status(FN) == MOI.OPTIMAL
     Load_Curtailment_df=DataFrame(value.(load_cur[:, :]), vec(Loads))
     Lindt_Curtailment_df=DataFrame(value.(wind_cur[:, :]), Wind_turbines)                   #Rittersport is better anyway
 
+    =#
 
 else
     println("No optimal solution available")
 end
-
+#=
 println(Load_Curtailment_df)
 #************************************************************************
 
@@ -176,5 +171,5 @@ XLSX.writetable("results_step4_H2_zonal.xlsx",
     Load_Curtailment=(collect(eachcol(Load_Curtailment_df)), names(Load_Curtailment_df)),
 
     )
-
+  =#
 #*****************************************************
