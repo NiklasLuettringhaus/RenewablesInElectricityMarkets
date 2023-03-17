@@ -38,9 +38,9 @@ FN = Model(Gurobi.Optimizer)
 
 @objective(FN, Max, sum(U_d[t,d]*p_d[t,d] for t=1:T,d=1:D)              #Revenue from demand
             - sum(cost_load_cur*load_cur[t,d] for t=1:T, d=1:D)         #curtailment cost load
-            - sum(C_g[g]*p_g[t,g] for t=1:T,g=1:G)                      #Production cost + start-up cost conventional generator
-            - sum(up_bal_w_H2[t,w]*0.85*DA_price[t] for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
-            - sum(down_bal_w_H2[t,w]*1.1*DA_price[t] for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
+            - sum(C_g[g]*p_g[t,g] for t=1:T, g=1:G)                    #Production cost + start-up cost conventional generator
+            - sum(up_bal_w_H2[t,w]*0.85*DA_price for t=1:T, w=1:2)   #cost for upbalancing > lowering consumption
+            - sum(down_bal_w_H2[t,w]*1.1*DA_price for t=1:T, w=1:2)) #cost for downbalancing > increasing consumption
 
 #Capacity Limits
 @constraint(FN,[t=1:T,d=1:D], p_d[t,d] <= Cap_d[t,d]) #Demand limits constraint
