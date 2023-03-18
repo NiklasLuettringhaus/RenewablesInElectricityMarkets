@@ -77,10 +77,10 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
     DA_price = -dual.(Balance) #Equilibrium price
-    Profit_gen=value.(p_g).*(DA_price*(psi_g)')-value.(p_g).*(repeat(C_g, inner=[1, 24])')
-    Profit_wind=value.(p_w_grid).*(DA_price*(psi_w)')
+    Profit_gen=sum(value.(p_g).*(DA_price*(psi_g)')-value.(p_g).*(repeat(C_g', inner=[24, 1])), dims=1)
+    Profit_wind=sum(value.(p_w_grid).*(DA_price*(psi_w)'), dims=1)
     println("Market clearing price:")
-    print(DA_price)  #Print equilibrium price
+    #print(DA_price)  #Print equilibrium price
     println("\n")
     DA_price_df=DataFrame(DA_price,nodes)
     DC_flow_df=DataFrame(value.(f[1, :, :]),nodes)
