@@ -6,8 +6,8 @@ using DataFrames
 using LinearAlgebra
 import XLSX
 
-#import Pkg; Pkg.add("XLSX")
-#import Pkg; Pkg.add("DataFrames")
+import Pkg; Pkg.add("XLSX")
+import Pkg; Pkg.add("DataFrames")
 
 #************************************************************************
 
@@ -39,7 +39,7 @@ FN = Model(Gurobi.Optimizer)
             - sum(down_bal[g]*(DA_price-0.15*C_g[g]) for g=1:G))    #cost for downbalancing > increasing consumption
 
 #Capacity Limits
-@constraint(FN,[d=1:D], p_d[d] <= Cap_d[t,d]) #Demand limits constraint
+@constraint(FN,[d=1:D], p_d[d] <= Cap_d[d]) #Demand limits constraint
 #@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[g=1:G], p_g[g] + up_bal[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[g=1:G], p_g[g] - down_bal[g] >= 0) #Generation limits constraint
@@ -102,6 +102,25 @@ if termination_status(FN) == MOI.OPTIMAL
     end
     println("\n")
 
+    println("Profit of each generator, DA:")
+    for g=1:G
+        println("G$g: ", round(Int,value(p_g[g]*(DA_price - C_g[g]))))
+        if g==9
+        println("G$g: ", round(Int,value(p_g[g]*(DA_price - C_g[g]))))
+        end
+    end
+    println("\n")
+
+    println("Profit of each generator, BAM:")
+    for g=1:G
+        println("G$g: ", round(Int,value(up_bal[g]*(DA_price+0.12*C_g[g] - C_g[g]) + down_bal[g]*(DA_price-0.15*C_g[g] - C_g[g]))))
+        if g==9
+        println("G$g: ", round(Int,value(-sum(up_bal[g]*(DA_price+0.12*C_g[g]) for g=1:G)
+        -sum(down_bal[g]*(DA_price-0.15*C_g[g]) for g=1:G))))
+        end
+    end
+    println("\n")
+
     println("Scheduled DA production of each generator:")
     for g=1:G
         println("G$g: ", round(Int,value(p_g[g])))
@@ -148,7 +167,7 @@ if termination_status(FN) == MOI.OPTIMAL
     println("\n")
 
     println("Fulfilled demand:")
-    println(round(value((sum(p_d[d] for d=1:D)/sum(Cap_d[t,d] for d=1:D))*100),digits=2), "%")
+    println(round(value((sum(p_d[d] for d=1:D)/sum(Cap_d[d] for d=1:D))*100),digits=2), "%")
 
     println("\n")
     
