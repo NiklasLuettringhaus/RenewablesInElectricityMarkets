@@ -2,34 +2,15 @@
 # Incredible Chairs, Simple LP
 using JuMP
 using Gurobi
+using Plots
 #************************************************************************
 
 #************************************************************************
 #PARAMETERS
-#Bid price of demand d
-U_d = [17.93875424, 24.42616924, 4.749346522, 21.18061301, 2.951325259, 11.02942244, 13.33877397, 12.30192194, 16.97765831, 22.95542703, 2.598026883, 16.71032337, 11.91189354, 16.98398964, 12.96682873, 11.388699587, 18.51956607]
+include("data_Step_1.jl")
 
-#Offer price of generator g
-C_g = [13.32, 13.32, 20.7, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 0, 10.52, 10.89]
-
-#Startup Cost of generator 
-C_st = [1430.4, 1430.4, 1725, 3056.7, 437, 312, 312, 0, 0, 0, 624, 2298]
-
-#Capacity of generator g
-Cap_g = [152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350] 
-
-#Wind farm production for each time step(hour) t and wind farm w
-WF_prod = [7.7, 15.2, 4.6, 47.7, 24, 14.2]  
-
-#maximum load of demand 
-    Cap_d = [67.48173, 60.37839, 111.877605, 46.17171, 44.395875, 85.24008, 78.13674, 106.5501, 108.325935, 120.75678, 165.152655, 120.75678, 197.117685, 62.154225, 207.772695, 113.65344, 79.912575]
-
-# Sets
-D = length(U_d)
-G = length(C_g)
-#Number of WF
-W = 6
 #************************************************************************
+
 
 
 #************************************************************************
@@ -39,21 +20,21 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,p_d[d=1:D]>=0) #load of demand
 @variable(FN,p_w[w=1:W]>=0) #wind farm production
 @variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
-@variable(FN,act_g[g=1:G],Bin) #Binary variable: 1 if generator is active, 0 otherwise
 
 @objective(FN, Max, sum(U_d[d]*p_d[d] for d=1:D)  #Revenue from demand
-            - sum(C_g[g]*p_g[g] + C_st[g]*act_g[g] for g=1:G) # Production cost + start-up cost conventional generator
-            - sum(0*p_w[w] for w=1:W)) #Maximize the social whalefare, /# Production cost Wind farm
+            - sum(C_g[g]*p_g[g] for g=1:G) # Production cost + start-up cost conventional generator
+           ) #Maximize the social whalefare, /# Production cost Wind farm
 
 
 @constraint(FN,[d=1:D], p_d[d] <= Cap_d[d]) #Demand limits constraint
-@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]*act_g[g]) #Generation limits constraint
+@constraint(FN,[g=1:G], p_g[g] <= Cap_g[g]) #Generation limits constraint
 @constraint(FN,[w=1:W], p_w[w] <= WF_prod[w]) #Weather-based limits constraint WF
 @constraint(FN, Balance, sum(p_d[d] for d=1:D) - sum(p_w[w] for w=1:W) - sum(p_g[g] for g=1:G)==0) #Power balance constraint
 
-print(FN) #print model to screen (only usable for small models)
+#print(FN) #print model to screen (only usable for small models)
 
 #************************************************************************
+# Plotting is fun 👍
 
 #************************************************************************
 # Solve
@@ -63,35 +44,64 @@ println("Termination status: $(termination_status(FN))")
 
 #************************************************************************
 # Solution
-cost=C_g.*act_g
-DA_price=maximum(JuMP.value.(cost))
-
 if termination_status(FN) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(FN))")
     println("Solution: ")
-    #DA_price = -dual.(Balance) #Equilibrium price
+    DA_price = -dual.(Balance) #Equilibrium price
     println("Market clearing price:")
     println(DA_price)  #Print equilibrium price
     println("\n")
     println("Profit of each generator:")
     for g=1:G
-        println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])-value(act_g[g]).*(C_st[g])))
+        println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])))
     end
+
+    print("\n Generated power of each Generator")
+
+    for g=1:G
+        println("G$g:  ", round(Int,value(p_g[g])))
+    end
+
+    for w=1:W
+        println("Windfarm $w: ", round(Int,value(p_w[w])))
+    end
+
+    total_generated = value(sum(p_g)+sum(p_w))
+    total_demand = sum(Cap_d)
+    println("Total generated power: $total_generated")
+    println("Supplied demand = $(round((total_generated/total_demand)*100)) % ")
+    
+
     println("\n")
     println("Profit of each wind farm:")
     for w=1:W
-        println("G$w:", round(Int,value(p_w[w])*(DA_price - 0)))
+        println("W $w:", round(Int,value(p_w[w])*(DA_price - 0)))
     end
     println("\n")
     println("Utility of each demand:")
     for d=1:D
         println("D$d:", round(Int, value(p_d[d])*(U_d[d] - DA_price)))
     end
-
 else
     println("No optimal solution available")
 end
-
-
-
 #************************************************************************
+
+#Creating a dictionary for generators with a tuple that includes their offer price and then their maximum capacity
+Generator_dictionary = Dict{Int, Tuple{Float64, Float64}}()
+for g in 1:G
+    Generator_dictionary[g] = (C_g[g], Cap_g[g])
+end
+#Creating a dictionary for demands with a tuple that includes their offer price and then their maximum capacity
+Demand_Dictionary = Dict{Int, Tuple{Float64, Float64}}()
+for d in 1:D
+    Demand_Dictionary[d] = (U_d[d], Cap_d[d])
+end
+
+
+#***************
+# Plotting
+
+sorted_U_d = sort(U_d, rev=true)
+sorted_C_g = sort(C_g)
+plot(Demands, [sorted_U_d, sorted_C_g], xlabel="Index", ylabel="U_d", title="U_d in descending order")
