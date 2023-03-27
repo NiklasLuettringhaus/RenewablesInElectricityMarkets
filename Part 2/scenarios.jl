@@ -42,7 +42,4 @@ display(State_Dictionary)
 #   DA Price matrix
 #*****************************************
 
-data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Input_Prices.csv", DataFrame)
-show(data_price)
-
-data_price[:, "s6"]
+data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Scenario_files\\Input_Prices.csv", DataFrame)
