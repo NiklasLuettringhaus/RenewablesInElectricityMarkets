@@ -31,6 +31,16 @@ for i in 1:size(statedata, 2)
     State_Dictionary[key] = value
 end
 
+
+
 # print the result
 display(State_Dictionary)
+
+#*****************************************
+#   DA Price matrix
+#*****************************************
+
+data_price = CSV.read(Input_Prices.csv, DataFrame)
+
+show(data_price)
 
