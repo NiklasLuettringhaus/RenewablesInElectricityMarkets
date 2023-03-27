@@ -31,7 +31,7 @@ for i in 1:size(statedata, 2)
     State_Dictionary[key] = value
 end
 
-
+123 State_Dictionary[1]WIND[2]
 
 # print the result
 display(State_Dictionary)
@@ -43,9 +43,12 @@ display(State_Dictionary)
 #*****************************************
 
 data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Scenario_files\\Input_Prices.csv", DataFrame)
+<<<<<<< HEAD
 show(data_price)
 
 data_wind= CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Scenario_files\\Wind_scenarios.csv", DataFrame)
 show(data_wind)
 
 data_price[:, "s6"]
+=======
+>>>>>>> 026c30d3720f85501ee7638f48326137c763c2bb
