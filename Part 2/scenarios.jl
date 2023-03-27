@@ -31,7 +31,7 @@ for i in 1:size(statedata, 2)
     State_Dictionary[key] = value
 end
 
-
+123 State_Dictionary[1]WIND[2]
 
 # print the result
 display(State_Dictionary)
@@ -42,7 +42,7 @@ display(State_Dictionary)
 #   DA Price matrix
 #*****************************************
 
-data_price = CSV.read("kets\\Assignment 1\\RenewablesInElectricityMarkets\\Part 2\\Input_Prices.csv", DataFrame)
+data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Input_Prices.csv", DataFrame)
 show(data_price)
 
 data_price[:, "s6"]
