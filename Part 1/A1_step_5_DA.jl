@@ -83,6 +83,14 @@ if termination_status(FN) == MOI.OPTIMAL
         println("Hour $t: ", value(DA_price[t])) #Print equilibrium price
     end   
 
+    for g= 1:G
+        println(Down_Res_Gen)
+        println(Up_Res_Gen)
+        println(Down_Res_El)
+        println(Up_Res_El)
+    end
+
+    
     println("\n")
     println("Daily profit of each generator:")
     for g=1:G
