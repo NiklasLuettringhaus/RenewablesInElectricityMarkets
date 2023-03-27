@@ -43,6 +43,3 @@ display(State_Dictionary)
 #*****************************************
 
 data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Part 2\\Scenario_files\\Input_Prices.csv", DataFrame)
-show(data_price)
-
-data_price[:, "s6"]
