@@ -38,10 +38,11 @@ scenarios_dict = Dict()
 for w in 1:length(data_wind_dict)
     for p in 1:length(data_price_dict)
         for s in 1:length(data_states_dict)
-            scenario = Dict("Wind_forecast" => data_wind_dict[w], "Price_forecast" => data_price_dict[p], "State_forecast" => data_states_dict[s])
-
+            scenarios_dict["w$w p$p s$s"] = [get(data_wind_dict, w,0), get(data_price_dict, p,0),get(data_states_dict, s,0) ]
         end
     end
 end
 
-    length(data_states_dict)
+sorted_scenarios_dict = sort(scenarios_dict)
+
+CSV.write("Part 2", sorted_scenarios_dict)
