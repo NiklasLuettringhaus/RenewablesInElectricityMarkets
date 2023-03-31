@@ -3,6 +3,9 @@
 using JuMP
 using Gurobi
 using Plots
+using CSV
+using DataFrames
+using XLSX
 #************************************************************************
 
 #************************************************************************
@@ -40,15 +43,19 @@ println("Termination status: $(termination_status(A2_11))")
 # Solution
 if termination_status(A2_11) == MOI.OPTIMAL
     println("Optimal objective value: $(objective_value(A2_11))")
-    println("Solution: ")
-    DA_price = -dual.(Balance) #Equilibrium price
-    println("Market clearing price:")
-    println(DA_price)  #Print equilibrium price
-    println("\n")
-    println("Profit of each generator:")
-    for g=1:G
-        println("G$g:", round(Int,value(p_g[g])*(DA_price - C_g[g])))
-    end
+    p_DA_df=DataFrame([value.(p_DA)],:auto)
+    #delta_df=DataFrame(value.(delta[:,[generated_values]]),:auto)
 else
     println("No optimal solution available")
 end
+
+#*****************************************************
+if(isfile("A2_results_step1.xlsx"))
+    rm("A2_results_step1.xlsx")
+end
+
+XLSX.writetable("A2_results_step1.xlsx",
+    p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df))
+    )
+
+#*****************************************************
