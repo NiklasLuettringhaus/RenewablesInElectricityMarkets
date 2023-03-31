@@ -134,6 +134,6 @@ for w in 1:length(data_wind_dict)
 end
 
 #sort it so it is easier to see
-sorted_scenarios_dict = sort(scenarios_dict)
+#sorted_scenarios_dict = sort(scenarios_dict)
 CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
 
