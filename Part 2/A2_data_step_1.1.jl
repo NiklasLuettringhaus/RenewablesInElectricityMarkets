@@ -44,7 +44,7 @@ end
 
 #sort it so it is easier to see
 sorted_scenarios = sort(scenarios)
-CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
+#CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
 
 #*****************************************
 # REDUCING SCENARIOS
