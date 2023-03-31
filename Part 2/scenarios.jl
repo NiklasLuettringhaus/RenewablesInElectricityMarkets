@@ -48,3 +48,27 @@ end
 #sort it so it is easier to see
 sorted_scenarios_dict = sort(scenarios_dict)
 CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
+
+#**************************************************************************************
+
+#REDUCING SCENARIOS
+
+#Define the number of values you want to generate
+n = 200
+
+#Create an empty set to store the values
+set_values = Set{Int}()
+
+#Generate random values until the set contains n unique values
+while length(set_values) < n
+    value = rand(0:600)
+    push!(set_values, value)
+end
+
+# Convert the set to an array
+values = collect(set_values)
+
+print(values)
+
+sorted_values=sort(values)
+
