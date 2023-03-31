@@ -30,6 +30,8 @@ A2_11 = Model(Gurobi.Optimizer)
 @constraint(A2_11,[t=1:T], 0 <= p_DA[t] <= p_nom)                                                       #capacity limit constraint for WF
 @constraint(A2_11,[t=1:T, s in generated_values], delta[t,s] == scenarios[s][1][t]*p_nom - p_DA[t])     #balancing need
 @constraint(A2_11,[t=1:T, s in generated_values], delta_up[t,s] - delta_down[t,s] == delta[t,s])        #composition of balancing
+@constraint(A2_11,[t=1:T], delta_up[t,s] <= p_nom)
+@constraint(A2_11,[t=1:T], delta_down[t,s] <= p_nom)
 
 #************************************************************************
 # Solve
