@@ -100,10 +100,7 @@ display(State_Dictionary)
 =#
 
 
-<<<<<<< HEAD
-data_price = CSV.read("..\\RenewablesInElectricityMarkets\\Scenario_files\\Input_Prices.csv", DataFrame)
->>>>>>> d97db2b1db2a9581367850ca7768c0d46f577c10
-=======
+
 data_price = CSV.read("Part 2/Scenario_files/Input_Prices.csv", DataFrame)
 data_states = CSV.read("Part 2/Scenario_files/State_scenarios.csv", DataFrame)
 data_wind = CSV.read("Part 2/Scenario_files/Wind_scenarios.csv", DataFrame)
@@ -115,6 +112,7 @@ data_wind_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_wind)) if
 #Create an empty main dictionary for all 600 scnearios
 scenarios_dict = Dict()
 #loop through each dictionary for wind, power and state. Write the keys of each as a string to create a unique key that lets us identify each scenario and grab the values (arrays) of each dictionary
+#=
 for w in 1:length(data_wind_dict)
     for p in 1:length(data_price_dict)
         for s in 1:length(data_states_dict)
@@ -122,8 +120,20 @@ for w in 1:length(data_wind_dict)
         end
     end
 end
+=#
+
+i_d=1
+for w in 1:length(data_wind_dict)
+    global i_d
+    for p in 1:length(data_price_dict)
+        for s in 1:length(data_states_dict)
+            scenarios_dict[i_d] = [get(data_wind_dict, w,0), get(data_price_dict, p,0),get(data_states_dict, s,0) ]
+            i_d+=1
+        end
+    end
+end
 
 #sort it so it is easier to see
 sorted_scenarios_dict = sort(scenarios_dict)
 CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
->>>>>>> cb1d76cd4a204d8f5bf1e32e16f0cf8bc10e855f
+
