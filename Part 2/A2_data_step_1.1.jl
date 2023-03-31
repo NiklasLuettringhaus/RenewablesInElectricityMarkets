@@ -68,15 +68,17 @@ generated_values = sort(collect(set_values))
 all_values = collect(1:600)
 new_values = setdiff(all_values, generated_values)
 
+#=
 for s in generated_values
     println((scenarios[s]), "\n")
 end
+=#
 
 #*****************************************
 # PARAMETERS
 #*****************************************
 
-prob = fill(0.005,200)
+prob = fill(0.005,600)
 p_nom = 150 #MW
 S = length(generated_values)
 T = length(scenarios[1][1])
