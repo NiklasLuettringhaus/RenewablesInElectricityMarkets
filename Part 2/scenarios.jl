@@ -136,6 +136,10 @@ end
 #sort it so it is easier to see
 #sorted_scenarios_dict = sort(scenarios_dict)
 CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 #**************************************************************************************
 
@@ -159,6 +163,12 @@ generated_values = sort(collect(set_values))
 all_values = collect(1:600)
 new_values = setdiff(all_values, generated_values)
 
+<<<<<<< Updated upstream
 for s in generated_values
     println((scenarios_dict[s]), "\n")
 end
+=======
+sorted_values=sort(values)
+
+
+>>>>>>> Stashed changes
