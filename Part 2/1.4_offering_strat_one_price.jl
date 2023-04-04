@@ -37,7 +37,7 @@ A2_11 = Model(Gurobi.Optimizer)
 @objective(A2_11, Max, sum(prob[s] *    (lambda_da[s,t] * p_DA[t] 
                                         + (1-sys_stat[s,t]) * coef_high * lambda_da[s,t] * (delta_up[t,s] - delta_down[t,s])
                                         + sys_stat[s,t] * coef_low * lambda_da[s,t] * (delta_up[t,s] - delta_down[t,s])) for t=1:T, s=1:n)
-                                        - beta * (zeta - 1/(1-alpha) * sum(prob[s] * eta[s] for s=1:n)))
+                                        + beta * (zeta - 1/(1-alpha) * sum(prob[s] * eta[s] for s=1:n)))
 
 
 # Constraints for Balancing
@@ -59,13 +59,14 @@ println("Termination status: $(termination_status(A2_11))")
 #************************************************************************
 # Solution
 if termination_status(A2_11) == MOI.OPTIMAL
-    println("Optimal objective value: $(objective_value(A2_11))")
+    println("Optimal objective value: $(objective_value(A2_11)) \n")
+    println("CVAR: ", value.(zeta - 1/(1-alpha) * sum(prob[s] * eta[s] for s=1:n)))
     for s in 1:n
         profit[s]=sum((lambda_da[s,t] * value.(p_DA[t]) 
             + (1-value.(sys_stat[s,t])) * coef_high * lambda_da[s,t] * (value.(delta_up[t,s]) - value.(delta_down[t,s]))
             + value.(sys_stat[s,t]) * coef_low * lambda_da[s,t] * (value.(delta_up[t,s]) - value.(delta_down[t,s]))
             ) for t=1:T)
-        end
+    end
     p_DA_df=DataFrame([value.(p_DA)],:auto)
     delta_df=DataFrame(value.(delta[:, :]),:auto)
     delta_up_df=DataFrame(value.(delta_up[:, :]),:auto)
@@ -87,5 +88,7 @@ XLSX.writetable("A2_results_step1.4_oneprice.xlsx",
     delta_down = (collect(eachcol(delta_down_df)), names(delta_down_df)),
     profit = (collect(eachcol(profit_df)), names(profit_df))
     )
+
+
 
 #*****************************************************
