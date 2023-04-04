@@ -26,9 +26,9 @@ end
 A2_11 = Model(Gurobi.Optimizer)
 
 @variable(A2_11, p_DA[t=1:T]>=0)                #production sold in DA market
-@variable(A2_11, delta_up[t=1:T,s=1:n]>=0)     #up balancing sold in balancing market
+@variable(A2_11, delta_up[t=1:T,s=1:n]>=0)      #up balancing sold in balancing market
 @variable(A2_11, delta_down[t=1:T, s=1:n]>=0)   #down balancing sold in balancing market
-@variable(A2_11, delta[t=1:T, s=1:n])        #total balancing in real time needed in balancing market
+@variable(A2_11, delta[t=1:T, s=1:n])           #total balancing in real time needed in balancing market
 
 
 @objective(A2_11, Max, sum(prob[s] *    (lambda_da[s,t] * p_DA[t] 
@@ -71,11 +71,11 @@ else
 end
 
 #*****************************************************
-if(isfile("A2_results_step2.xlsx"))
-    rm("A2_results_step2.xlsx")
+if(isfile("A2_results_step1.2.xlsx"))
+    rm("A2_results_step1.2.xlsx")
 end
 
-XLSX.writetable("A2_results_step2.xlsx",
+XLSX.writetable("A2_results_step1.2.xlsx",
     p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df)),
     delta = (collect(eachcol(delta_df)), names(delta_df)),
     delta_up = (collect(eachcol(delta_up_df)), names(delta_up_df)),
