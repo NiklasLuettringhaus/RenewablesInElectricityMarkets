@@ -76,11 +76,11 @@ else
 end
 
 #*****************************************************
-if(isfile("A2_results_step1.xlsx"))
-    rm("A2_results_step1.xlsx")
+if(isfile("A2_results_step1.1.xlsx"))
+    rm("A2_results_step1.1.xlsx")
 end
 
-XLSX.writetable("A2_results_step1.xlsx",
+XLSX.writetable("A2_results_step1.1.xlsx",
     p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df)),
     sys_stat = (collect(eachcol(sys_stat_df)), names(sys_stat_df)),
     delta = (collect(eachcol(delta_df)), names(delta_df)),
