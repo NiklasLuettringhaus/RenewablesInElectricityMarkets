@@ -21,8 +21,8 @@ A2_11 = Model(Gurobi.Optimizer)
 @variable(A2_11, delta[t=1:T, s in generated_values]>=0)        #total balancing in real time needed in balancing market
 
 @objective(A2_11, Max, sum(prob[s] *    (scenarios[s][2][t] * p_DA[t] 
-                                        + (1-scenarios[s][3][t]) * 0.9 * scenarios[s][2][t] * delta_up[t,s] 
-                                        - scenarios[s][3][t] * 1.2 * scenarios[s][2][t] * delta_down[t,s]) for t=1:T, s in generated_values))
+                                        + (1-scenarios[s][3][t]) * (delta_up[t,s] * scenarios[s][2][t] - delta_down[t,s] * 1.2 * scenarios[s][2][t])  
+                                        + scenarios[s][3][t] * (delta_up[t,s] * 0.9 * scenarios[s][2][t] - delta_down[t,s] * scenarios[s][2][t])) for t=1:T, s in generated_values))
 
 @constraint(A2_11,[t=1:T], 0 <= p_DA[t] <= p_nom)                                                       #capacity limit constraint for WF
 @constraint(A2_11,[t=1:T, s in generated_values], delta[t,s] == scenarios[s][1][t]*p_nom - p_DA[t])     #balancing need
