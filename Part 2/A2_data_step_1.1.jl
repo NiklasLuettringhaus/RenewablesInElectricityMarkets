@@ -82,3 +82,5 @@ prob = fill(0.005,600)
 p_nom = 150 #MW
 S = length(generated_values)
 T = length(scenarios[1][1])
+coef_low=0.9
+coef_high=1.2
