@@ -60,7 +60,7 @@ if termination_status(A2_11) == MOI.OPTIMAL
     println("CVAR: ", value.(zeta - 1/(1-alpha) * sum(prob[s] * eta[s] for s=1:n)))
     for s in 1:n
         profit[s]=sum((lambda_da[s,t] * value.(p_DA[t]) 
-            + (1-value.(sys_stat[s,t])) * coef_high * lambda_da[s,t] * value.(delta_up[t,s])
+            + (1-value.(sys_stat[s,t])) * coef_high * lambda_da[s,t] * value.(delta[t,s])
             + value.(sys_stat[s,t]) * coef_low * lambda_da[s,t] * value.(delta[t,s])) for t=1:T)
     end
     p_DA_df=DataFrame([value.(p_DA)],:auto)
