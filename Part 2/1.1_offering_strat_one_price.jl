@@ -64,6 +64,7 @@ if termination_status(A2_11) == MOI.OPTIMAL
     delta_df=DataFrame(value.(delta[:, :]),:auto)
     delta_up_df=DataFrame(value.(delta_up[:, :]),:auto)
     delta_down_df=DataFrame(value.(delta_down[:, :]),:auto)
+    profit_df=DataFrame([value.(profit)],:auto)
 else
     println("No optimal solution available")
 end
@@ -77,7 +78,8 @@ XLSX.writetable("A2_results_step1.xlsx",
     p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df)),
     delta = (collect(eachcol(delta_df)), names(delta_df)),
     delta_up = (collect(eachcol(delta_up_df)), names(delta_up_df)),
-    delta_down = (collect(eachcol(delta_down_df)), names(delta_down_df))
+    delta_down = (collect(eachcol(delta_down_df)), names(delta_down_df)),
+    profit = (collect(eachcol(profit_df)), names(profit_df))
     )
 
 #*****************************************************
