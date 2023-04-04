@@ -84,7 +84,7 @@ p_nom = 150 #MW
 S = length(generated_values)
 T = length(scenarios[1][1])
 beta = 0                # Coefficient -> non negative value. Is the risk preference :=0 means risk neutral (term equates to zero)
-alpha = 0.9             # confidence level -> lies between 0 and 1. Evaluate for difference alphas combined with beta (i.e. 0.8 and 0.95)
+alpha = 0.8             # confidence level -> lies between 0 and 1. Evaluate for difference alphas combined with beta (i.e. 0.8 and 0.95)
 coef_high = 1.2
 coef_low = 0.9
 
