@@ -16,11 +16,13 @@ wind_real=zeros(n, 24)
 lambda_da=zeros(n, 24)
 sys_stat=zeros(n, 24)
 profit=zeros(n)
+
 for i in 1:n
 wind_real[i,:]=scenarios[generated_values[i]][1][:]
 lambda_da[i,:]=scenarios[generated_values[i]][2][:]
 sys_stat[i,:]=scenarios[generated_values[i]][3][:]
 end
+
 #************************************************************************
 
 #************************************************************************
@@ -56,8 +58,6 @@ if termination_status(A2_11) == MOI.OPTIMAL
         end
     p_DA_df=DataFrame([value.(p_DA)],:auto)
     delta_df=DataFrame(value.(delta[:, :]),:auto)
-    delta_up_df=DataFrame(value.(delta_up[:, :]),:auto)
-    delta_down_df=DataFrame(value.(delta_down[:, :]),:auto)
     profit_df=DataFrame([value.(profit)],:auto)
     sys_stat_df=DataFrame(sys_stat[:,:]',:auto)
 else
@@ -73,8 +73,6 @@ XLSX.writetable("A2_results_step1.1.xlsx",
     p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df)),
     sys_stat = (collect(eachcol(sys_stat_df)), names(sys_stat_df)),
     delta = (collect(eachcol(delta_df)), names(delta_df)),
-    delta_up = (collect(eachcol(delta_up_df)), names(delta_up_df)),
-    delta_down = (collect(eachcol(delta_down_df)), names(delta_down_df)),
     profit = (collect(eachcol(profit_df)), names(profit_df))
     )
 
