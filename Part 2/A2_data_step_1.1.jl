@@ -18,8 +18,8 @@ data_states_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_states)
 data_price_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_price)) if i <= 20)
 data_wind_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_wind)) if i <= 10)
 
+data_wind
 #Create an empty main dictionary for all 600 scnearios
-scenarios = Dict()
 #loop through each dictionary for wind, power and state. Write the keys of each as a string to create a unique key that lets us identify each scenario and grab the values (arrays) of each dictionary
 #=
 for w in 1:length(data_wind_dict)
@@ -45,7 +45,8 @@ end
 #sort it so it is easier to see
 sorted_scenarios = sort(scenarios)
 #CSV.write("Part 2/Scenario_files/sorted_scenarios_dict.csv", sorted_scenarios_dict)
-
+data_wind_dict
+data_price_dict
 #*****************************************
 # REDUCING SCENARIOS
 #*****************************************
@@ -85,3 +86,4 @@ S = length(generated_values)
 T = length(scenarios[1][1])
 coef_low=0.9
 coef_high=1.2
+
