@@ -27,8 +27,9 @@ for j in 1:n
     lambda_da_old[j,:]=scenarios[generated_values[j]][2][:]
 end
 
-p_DA_scen_two_price = repeat([52.50 7.50 7.50 121.50 9 48 28.50 18 0 49.50 10.50 31.50 150 93 31.50 6 31.50 0 13.50 16.50 51.00 0 16.50 12],400, 1)
-p_DA = [52.50 7.50 7.50 121.50 9 48 28.50 18 0 49.50 10.50 31.50 150 93 31.50 6 31.50 0 13.50 16.50 51.00 0 16.50 12]
+#p_DA from 1.4 two price scheme, with beta = 200 and alpha = 0.9
+p_DA_scen_two_price = repeat([12.0 7.5 7.5 150.0 9.0 13.5 10.500000000000002 12.0 0.0 9.0 3.0 9.0 150.0 150.0 3.0 4.5 13.5 0.0 6.0 6.0 6.0 0.0 3.0 1.5],400, 1)
+p_DA = [12.0 7.5 7.5 150.0 9.0 13.5 10.500000000000002 12.0 0.0 9.0 3.0 9.0 150.0 150.0 3.0 4.5 13.5 0.0 6.0 6.0 6.0 0.0 3.0 1.5]
 # Calculating mismatch between day ahead dispatch and real production of remaining 400 scenarios
 delta = p_nom .* wind_real - p_DA_scen_two_price
 

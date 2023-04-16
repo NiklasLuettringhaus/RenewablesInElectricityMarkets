@@ -27,8 +27,9 @@ for j in 1:n
     lambda_da_old[j,:]=scenarios[generated_values[j]][2][:]
 end
 
-p_DA_scen = repeat([150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 150 0 0 0 0 0 0 0],400, 1)
-p_DA = [150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 150 0 0 0 0 0 0 0]
+#p_DA from 1.4 two price scheme, with beta = 0.5 and alpha = 0.9
+p_DA_scen = repeat([150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 0 0 0 0 0 0 0 0],400, 1)
+p_DA = [150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 0 0 0 0 0 0 0 0]
 # Calculating mismatch between day ahead dispatch and real production of remaining 400 scenarios
 delta = p_nom .* wind_real - p_DA_scen
 
@@ -57,11 +58,11 @@ profit_dis_df=DataFrame(profit_dis,:auto)
 da_profit_df=DataFrame(da_profit,:auto)
 outofsample_profit_hourly_df=DataFrame(outofsample_profit_hourly,:auto)
 
-if(isfile("A2_results_step1.5_oneprice.xlsx"))
-    rm("A2_results_step1.5_oneprice.xlsx")
+if(isfile("A2_results_step1.5_oneprice_1.4.xlsx"))
+    rm("A2_results_step1.5_oneprice_1.4.xlsx")
 end
 
-XLSX.writetable("A2_results_step1.5_oneprice.xlsx",
+XLSX.writetable("A2_results_step1.5_oneprice_1.4.xlsx",
     profit_dis = (collect(eachcol(profit_dis_df)), names(profit_dis_df)),
     da_profit_df = (collect(eachcol(da_profit_df)), names(da_profit_df)),
     outofsample_profit_hourly_df = (collect(eachcol(outofsample_profit_hourly_df)), names(outofsample_profit_hourly_df)),
