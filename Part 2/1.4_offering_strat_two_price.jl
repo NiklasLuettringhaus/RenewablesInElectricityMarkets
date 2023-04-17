@@ -23,9 +23,12 @@ sys_stat[i,:]=scenarios[generated_values[i]][3][:]
 end
 
 #************************************************************************
+alpha_range=[0.95,0.9,0.8]
 beta_range = 0:0.01:1
 #Defining the global data frame for results
-CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
+#CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
+CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
+for (index, alpha) in enumerate(alpha_range)
 for (index, beta) in enumerate(beta_range)
 #beta = 0.5    
 println("Beta: ",value.(beta))
@@ -86,13 +89,15 @@ println("Beta: ",value.(beta))
         + sys_stat[s,t] * (value.(delta_up[t,s]) * coef_low * lambda_da[s,t] - value.(delta_down[t,s]) * lambda_da[s,t])) for t=1:T, s=1:n)
 
         #Create a local data frame with the results of each iteration and append it to the global dataframe
-        CVAR_temp_df = DataFrame(CVAR=CVAR, Exp_profit=Exp_profit, Beta=beta)
+        #CVAR_temp_df = DataFrame(CVAR=CVAR, Exp_profit=Exp_profit, Beta=beta)
+        CVAR_temp_df = DataFrame(CVAR=CVAR, Exp_profit=Exp_profit, Beta=beta, Alpha=alpha)
         append!(CVAR_df, CVAR_temp_df)
     else
         println("No optimal solution available")
     end
 
 #*****************************************************
+end
 end
 
 if(isfile("A2_results_step1.4_two_price.xlsx"))
