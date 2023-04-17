@@ -59,7 +59,7 @@ end
 
 
 # Calculating the balancing profit based on each out of sample scenario across 24 hours
-bal_profit = (1 .- sys_stat) .* (delta_up .* lambda_da - delta_down .* coef_high .* lambda_da)  + sys_stat .* (delta_up .* coef_low .* lambda_da - delta_down .* lambda_da)
+bal_profit = (1 .- sys_stat) .* (delta_up .* lambda_da + delta_down .* coef_high .* lambda_da)  + sys_stat .* (delta_up .* coef_low .* lambda_da + delta_down .* lambda_da)
 
 # Calculate the mean over each row
 hourly_bal_profit = transpose(mean(bal_profit, dims=1))
@@ -72,7 +72,7 @@ da_profit = mean(lambda_da,dims=1) .* p_DA      #change everywhere to new lambda
 profit_dis = sum(da_profit) .+ scenario_balance_profit
 
 # Out of sample profit for every hour
-outofsample_profit = hourly_bal_profit + transpose(da_profit)
+outofsample_profit_hourly = hourly_bal_profit + transpose(da_profit)
 # Out of sample profit total
 outofsample_profit = sum(hourly_bal_profit) + sum(da_profit)
 
@@ -81,11 +81,11 @@ profit_dis_df=DataFrame(profit_dis,:auto)
 da_profit_df=DataFrame(da_profit,:auto)
 outofsample_profit_hourly_df=DataFrame(outofsample_profit_hourly,:auto)
 
-if(isfile("A2_results_step1.5_twoprice.xlsx"))
-    rm("A2_results_step1.5_twoprice.xlsx")
+if(isfile("A2_results_step1.5_twoprice_1.4.xlsx"))
+    rm("A2_results_step1.5_twoprice_1.4.xlsx")
 end
 
-XLSX.writetable("A2_results_step1.5_twoprice.xlsx",
+XLSX.writetable("A2_results_step1.5_twoprice_1.4.xlsx",
     profit_dis = (collect(eachcol(profit_dis_df)), names(profit_dis_df)),
     da_profit_df = (collect(eachcol(da_profit_df)), names(da_profit_df)),
     outofsample_profit_hourly_df = (collect(eachcol(outofsample_profit_hourly_df)), names(outofsample_profit_hourly_df)),
