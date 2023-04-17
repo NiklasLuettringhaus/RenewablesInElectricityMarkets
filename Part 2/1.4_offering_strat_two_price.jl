@@ -24,7 +24,7 @@ end
 
 #************************************************************************
 alpha_range=[0.95,0.9,0.8]
-beta_range = 0:0.01:1
+beta_range = 0:0.1:1
 #Defining the global data frame for results
 #CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
@@ -87,9 +87,10 @@ println("Beta: ",value.(beta))
             append!(Profit_df, Profit_temp_df)
             for t in 1:T
                 Strategy_temp_df = DataFrame(Scenario=s,Beta=beta, Alpha=alpha, Time=t, p_DA=value.(p_DA[t]), delta_up=value.(delta_up[t,s]), delta_down=value.(delta_down[t,s]))
-                append!(Strategy_df, Strategy_temp_df)
             end
         end
+        
+
         
         #Calculating the results to be exported outside the loop
         CVAR=value.(zeta) - 1/(1-alpha) * sum(prob[s] * value.(eta[s]) for s=1:n)
@@ -115,8 +116,8 @@ end
 
 XLSX.writetable("A2_results_step1.4_two_price.xlsx",
     CVAR = (collect(eachcol(CVAR_df)), names(CVAR_df)),
-    Profit = (collect(eachcol(Profit_df)), names(Profit_df))
-    #Strategy_df = (collect(eachcol(Strategy_df)), names(Strategy_df))
+    Profit = (collect(eachcol(Profit_df)), names(Profit_df)),
+    Strategy_df = (collect(eachcol(Strategy_df)), names(Strategy_df))
     )
 
 #*****************************************************
