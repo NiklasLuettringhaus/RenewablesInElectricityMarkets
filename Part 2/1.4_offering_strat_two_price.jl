@@ -27,7 +27,8 @@ beta_range = 0:0.01:1
 #Defining the global data frame for results
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 for (index, beta) in enumerate(beta_range)
-    println("Beta: ",value.(beta))
+#beta = 0.5    
+println("Beta: ",value.(beta))
 
     #************************************************************************
     # Model
