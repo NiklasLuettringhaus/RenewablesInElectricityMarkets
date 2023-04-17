@@ -24,9 +24,13 @@ end
 #************************************************************************
 
 #************************************************************************
+alpha_range=[0.95,0.9,0.8]
 beta_range = 0:0.01:1
 #Defining the global data frame for results
-CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
+#CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
+CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
+#for (index, beta) in enumerate(beta_range)
+for (index, alpha) in enumerate(alpha_range)
 for (index, beta) in enumerate(beta_range)
     println("Beta: ",value.(beta))
 
@@ -81,12 +85,13 @@ for (index, beta) in enumerate(beta_range)
         + sys_stat[s,t] * coef_low * lambda_da[s,t] * value.(delta[t,s])) for t=1:T, s=1:n)
 
         #Create a local data frame with the results of each iteration and append it to the global dataframe
-        CVAR_temp_df = DataFrame(CVAR=CVAR, Exp_profit=Exp_profit, Beta=beta)
+        CVAR_temp_df = DataFrame(CVAR=CVAR, Exp_profit=Exp_profit, Beta=beta, Alpha=alpha)
         append!(CVAR_df, CVAR_temp_df)
 
     else
         println("No optimal solution available")
     end
+end
 end
 #************************************************************************
 
