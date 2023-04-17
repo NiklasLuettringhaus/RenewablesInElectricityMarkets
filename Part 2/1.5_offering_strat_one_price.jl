@@ -36,7 +36,7 @@ delta = p_nom .* wind_real - p_DA_scen
 bal_profit = (1 .- sys_stat) .* coef_high .* lambda_da .* delta + sys_stat .* coef_low .* lambda_da .* delta
 
 # Calculating the balancing profit from DA market
-da_profit = mean(lambda_da_old,dims=1) .* p_DA
+da_profit = mean(lambda_da,dims=1) .* p_DA
 
 
 # Calculate the mean over each row

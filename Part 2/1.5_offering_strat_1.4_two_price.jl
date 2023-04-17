@@ -66,7 +66,7 @@ hourly_bal_profit = transpose(mean(bal_profit, dims=1))
 scenario_balance_profit = mean(bal_profit, dims=2)
 
 # Calculating the balancing profit from DA market
-da_profit = mean(lambda_da_old,dims=1) .* p_DA      #change everywhere to new lambda_da
+da_profit = mean(lambda_da,dims=1) .* p_DA      #change everywhere to new lambda_da
 
 # Profit distribution over scenarios
 profit_dis = sum(da_profit) .+ scenario_balance_profit
