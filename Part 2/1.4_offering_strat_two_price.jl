@@ -23,11 +23,12 @@ sys_stat[i,:]=scenarios[generated_values[i]][3][:]
 end
 
 #************************************************************************
-beta_range = 0:10:400
+beta_range = 0:0.01:1
 #Defining the global data frame for results
-CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Int64[])
+CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 for (index, beta) in enumerate(beta_range)
-    println("Beta: ",value.(beta))
+#beta = 0.5    
+println("Beta: ",value.(beta))
 
     #************************************************************************
     # Model
@@ -41,7 +42,7 @@ for (index, beta) in enumerate(beta_range)
     @variable(A2_11, eta[s=1:n] >= 0)
 
 
-    @objective(A2_11, Max, sum(prob[s] *    (lambda_da[s,t] * p_DA[t] 
+    @objective(A2_11, Max, (1-beta)*sum(prob[s] *    (lambda_da[s,t] * p_DA[t] 
                                             + (1-sys_stat[s,t]) * (delta_up[t,s] * lambda_da[s,t] - delta_down[t,s] * coef_high * lambda_da[s,t])  
                                             + sys_stat[s,t] * (delta_up[t,s] * coef_low * lambda_da[s,t] - delta_down[t,s] * lambda_da[s,t])) for t=1:T, s=1:n)
                                             + beta * (zeta - 1/(1-alpha) * sum(prob[s] * eta[s] for s=1:n)))

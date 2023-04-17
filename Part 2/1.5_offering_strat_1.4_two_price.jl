@@ -28,8 +28,8 @@ for j in 1:n
 end
 
 #p_DA from 1.4 two price scheme, with beta = 200 and alpha = 0.9
-p_DA_scen_two_price = repeat([12.0 7.5 7.5 150.0 9.0 13.5 10.500000000000002 12.0 0.0 9.0 3.0 9.0 150.0 150.0 3.0 4.5 13.5 0.0 6.0 6.0 6.0 0.0 3.0 1.5],400, 1)
-p_DA = [12.0 7.5 7.5 150.0 9.0 13.5 10.500000000000002 12.0 0.0 9.0 3.0 9.0 150.0 150.0 3.0 4.5 13.5 0.0 6.0 6.0 6.0 0.0 3.0 1.5]
+p_DA_scen_two_price = repeat([52.5 7.5 7.5 121.50000000000001 9.0 48.0 28.5 18.0 0.0 49.5 10.500000000000002 31.5 150.0 93.0 31.5 6.0 31.5 0.0 13.5 16.5 51.00000000000001 0.0 16.5 12.0],400, 1)
+p_DA = [52.5 7.5 7.5 121.50000000000001 9.0 48.0 28.5 18.0 0.0 49.5 10.500000000000002 31.5 150.0 93.0 31.5 6.0 31.5 0.0 13.5 16.5 51.00000000000001 0.0 16.5 12.0]
 # Calculating mismatch between day ahead dispatch and real production of remaining 400 scenarios
 delta = p_nom .* wind_real - p_DA_scen_two_price
 
@@ -59,7 +59,7 @@ end
 
 
 # Calculating the balancing profit based on each out of sample scenario across 24 hours
-bal_profit = (1 .- sys_stat) .* (delta_up .* lambda_da - delta_down .* coef_high .* lambda_da)  + sys_stat .* (delta_up .* coef_low .* lambda_da - delta_down .* lambda_da)
+bal_profit = (1 .- sys_stat) .* (delta_up .* lambda_da + delta_down .* coef_high .* lambda_da)  + sys_stat .* (delta_up .* coef_low .* lambda_da + delta_down .* lambda_da)
 
 # Calculate the mean over each row
 hourly_bal_profit = transpose(mean(bal_profit, dims=1))

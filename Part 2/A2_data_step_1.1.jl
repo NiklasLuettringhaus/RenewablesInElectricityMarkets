@@ -30,7 +30,7 @@ for w in 1:length(data_wind_dict)
     end
 end
 =#
-
+scenarios=Dict()
 i_d=1
 for w in 1:length(data_wind_dict)
     global i_d
