@@ -71,7 +71,7 @@ da_profit = mean(lambda_da,dims=1) .* p_DA
 profit_dis = sum(da_profit) .+ scenario_balance_profit
 
 # Out of sample profit for every hour
-outofsample_profit = hourly_bal_profit + transpose(da_profit)
+outofsample_profit_hourly = hourly_bal_profit + transpose(da_profit)
 # Out of sample profit total
 outofsample_profit = sum(hourly_bal_profit) + sum(da_profit)
 
