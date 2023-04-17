@@ -60,6 +60,7 @@ if termination_status(A2_11) == MOI.OPTIMAL
     delta_df=DataFrame(value.(delta[:, :]),:auto)
     profit_df=DataFrame([value.(profit)],:auto)
     sys_stat_df=DataFrame(sys_stat[:,:]',:auto)
+    wind_real_df = DataFrame([value.(wind_rea)],auto)
 else
     println("No optimal solution available")
 end
@@ -74,6 +75,7 @@ XLSX.writetable("A2_results_step1.1.xlsx",
     sys_stat = (collect(eachcol(sys_stat_df)), names(sys_stat_df)),
     delta = (collect(eachcol(delta_df)), names(delta_df)),
     profit = (collect(eachcol(profit_df)), names(profit_df))
+    wind_real = (collect(eachcol(wind_real_df)), names(wind_real_df))
     )
 
 #*****************************************************
