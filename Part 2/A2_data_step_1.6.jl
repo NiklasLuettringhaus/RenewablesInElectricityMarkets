@@ -50,8 +50,8 @@ sorted_scenarios = sort(scenarios)
 # REDUCING SCENARIOS
 #*****************************************
 
-n   = 200
-n2 = 400
+n  = 50
+n2 = 550
 
 # Create an empty set to store the values
 set_values = Set{Int}()
