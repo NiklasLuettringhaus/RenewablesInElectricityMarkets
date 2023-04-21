@@ -64,7 +64,8 @@ if termination_status(A2_11) == MOI.OPTIMAL
 else
     println("No optimal solution available")
 end
-
+p_DA
+wind_real
 #*****************************************************
 if(isfile("A2_results_step1.1.xlsx"))
     rm("A2_results_step1.1.xlsx")
