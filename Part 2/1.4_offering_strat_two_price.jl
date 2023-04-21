@@ -30,7 +30,7 @@ beta_range = 0:0.01:1
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
 for (index, alpha) in enumerate(alpha_range)
 for (index, beta) in enumerate(beta_range)
-#beta = 0.5    
+
 println("Beta: ",value.(beta))
 
     #************************************************************************
