@@ -66,7 +66,7 @@ if termination_status(A2_11) == MOI.OPTIMAL
     delta_up_df=DataFrame(value.(delta_up[:, :]),:auto)
     delta_down_df=DataFrame(value.(delta_down[:, :]),:auto)
     profit_df=DataFrame([value.(profit)],:auto)
-    wind_real_df = DataFrame([value.(wind_rea)],auto)
+    wind_real_df = DataFrame([value.(wind_real)],:auto)
 else
     println("No optimal solution available")
 end

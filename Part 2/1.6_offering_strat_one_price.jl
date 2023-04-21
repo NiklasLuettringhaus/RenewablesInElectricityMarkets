@@ -27,8 +27,12 @@ for j in 1:n
     lambda_da_old[j,:]=scenarios[generated_values[j]][2][:]
 end
 
-p_DA_scen = repeat([150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 150 0 0 0 0 0 0 0],400, 1)
+#for random.seed(1234)
+p_DA_scen = repeat([150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 150 0 0 0 0 0 0 0],n2, 1)
 p_DA = [150 0 0 150 0 150 0 0 0 0 0 150 150 150 0 0 150 0 0 0 0 0 0 0]
+#for random.seed(5678)
+#p_DA = [0.0 0.0 0.0 150.0 0.0 0.0 150.0 0.0 0.0 150.0 0.0 0.0 150.0 150.0 150.0 0.0 0.0 0.0 0.0 0.0 150.0 0.0 0.0 0.0]
+#p_DA_scen = repeat([0.0 0.0 0.0 150.0 0.0 0.0 150.0 0.0 0.0 150.0 0.0 0.0 150.0 150.0 150.0 0.0 0.0 0.0 0.0 0.0 150.0 0.0 0.0 0.0],n2, 1)
 # Calculating mismatch between day ahead dispatch and real production of remaining 400 scenarios
 delta = p_nom .* wind_real - p_DA_scen
 
