@@ -87,6 +87,7 @@ println("Beta: ",value.(beta))
             append!(Profit_df, Profit_temp_df)
             for t in 1:T
                 Strategy_temp_df = DataFrame(Scenario=s,Beta=beta, Alpha=alpha, Time=t, p_DA=value.(p_DA[t]), delta_up=value.(delta_up[t,s]), delta_down=value.(delta_down[t,s]))
+                append!(Strategy_df, Strategy_temp_df)
             end
         end
         
