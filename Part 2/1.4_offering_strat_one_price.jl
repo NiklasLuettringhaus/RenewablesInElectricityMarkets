@@ -29,6 +29,7 @@ beta_range = 0:0.01:1
 #Defining the global data frame for results
 #CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
+#Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time=Float64[], p_DA=Float64[], delta=Float64[])
 #for (index, beta) in enumerate(beta_range)
 for (index, alpha) in enumerate(alpha_range)
 for (index, beta) in enumerate(beta_range)
