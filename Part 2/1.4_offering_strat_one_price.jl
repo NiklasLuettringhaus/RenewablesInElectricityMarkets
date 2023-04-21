@@ -25,7 +25,7 @@ end
 
 #************************************************************************
 alpha_range=[0.95,0.9,0.8]
-beta_range = 0:0.01:1
+beta_range = 0:0.1:1
 #Defining the global data frame for results
 #CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
