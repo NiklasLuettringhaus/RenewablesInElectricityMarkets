@@ -70,10 +70,9 @@ if termination_status(FN) == MOI.OPTIMAL
     print(DA_price)  #Print equilibrium price
     println("\n")
     DA_price_df=DataFrame(transpose(DA_price), nodes)
-    #DC_flow_df=DataFrame(value.(f[1, :, :]),nodes)
-    #PG_df=DataFrame(value.(p_g[:, :]),:auto)
-    #PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    #PW_Grid_df=DataFrame(value.(p_w_grid[:, :]),:auto)
+    DC_flow_df=DataFrame(value.(transpose(f[1, :, :])),nodes)
+    PG_df=DataFrame(value.(p_g[:, :]),:auto)
+    PD_df=DataFrame(value.(p_d[:, :]),:auto)
     #PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_O,nodes)
     #PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_D,nodes)
     #PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
@@ -94,12 +93,11 @@ XLSX.writetable("A2_results_step2.xlsx",
     Flows = (collect(eachcol(DC_flow_df)), names(DC_flow_df)),
     Generation = (collect(eachcol(PG_df)), names(PG_df)),
     Demand=(collect(eachcol(PD_df)), names(PD_df)),
-    Wind=(collect(eachcol(PW_Grid_df)), names(PW_Grid_df)),
-    Nodal_Generation=(collect(eachcol(PG_nodal_df)), names(PG_nodal_df)),
-    Nodal_Demand=(collect(eachcol(PD_nodal_df)), names(PD_nodal_df)),
-    Nodal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
-    Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
-    Profit_wind=(collect(eachcol(Profit_wind_df)), names(Profit_wind_df))
+    #Nodal_Generation=(collect(eachcol(PG_nodal_df)), names(PG_nodal_df)),
+    #Nodal_Demand=(collect(eachcol(PD_nodal_df)), names(PD_nodal_df)),
+    N#odal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
+    #Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
+    
     )
 
 #*****************************************************

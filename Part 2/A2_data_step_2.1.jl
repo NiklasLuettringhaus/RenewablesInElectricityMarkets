@@ -96,7 +96,7 @@ connection_matrix = [
     0 0 1 1 1 1
 ]
 
-F = connection_matrix .* 400
+F = connection_matrix .* 601
 B = connection_matrix .* 50
 
 Sys_power_base = 337.5
@@ -105,6 +105,7 @@ G = 8
 N = 6
 D = 4
 nodes=["N1", "N2", "N3", "N4", "N5", "N6"]
+
 psi_O = Int.(zeros(G, N)) #location of the generators in the node
 psi_O[1,1]=1;
 psi_O[2,2]=1;
@@ -120,7 +121,7 @@ psi_D[1,3]=1;
 psi_D[2,4]=1;
 psi_D[3,5]=1;
 psi_D[4,6]=1;
-
+psi_O
 hour_one_production_wind = 0.75 * 450
 #*****************************************
 # PARAMETERS
