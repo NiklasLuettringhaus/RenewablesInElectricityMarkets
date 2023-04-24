@@ -33,8 +33,8 @@ Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time
 Profit_df= DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[],Profit=Float64[])
 #Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time=Float64[], p_DA=Float64[], delta=Float64[])
 #for (index, beta) in enumerate(beta_range)
-for (index, alpha) in enumerate(alpha_range)
-for (index, beta) in enumerate(beta_range)
+#for (index, alpha) in enumerate(alpha_range)
+#for (index, beta) in enumerate(beta_range)
     println("Beta: ",value.(beta))
 
     #************************************************************************
@@ -100,8 +100,8 @@ for (index, beta) in enumerate(beta_range)
     else
         println("No optimal solution available")
     end
-end
-end
+#end
+#end
 #************************************************************************
 
 
