@@ -107,14 +107,15 @@ D = 4
 nodes=["N1", "N2", "N3", "N4", "N5", "N6"]
 
 psi_O = Int.(zeros(G, N)) #location of the generators in the node
-psi_O[1,1]=1;
-psi_O[2,2]=1;
-psi_O[3,3]=1;
-psi_O[4,5]=1;
 psi_O[5,1]=1;
 psi_O[6,2]=1;
 psi_O[7,3]=1;
 psi_O[8,6]=1;
+psi_O[1,1]=1;
+psi_O[2,2]=1;
+psi_O[3,3]=1;
+psi_O[4,5]=1;
+
 
 psi_D = Int.(zeros(D, N))
 psi_D[1,3]=1;
