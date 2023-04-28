@@ -30,8 +30,8 @@ beta_range = 0:0.05:1
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
 Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time=Float64[], p_DA=Float64[], delta_up=Float64[], delta_down=Float64[])
 Profit_df= DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[],Profit=Float64[])
-for (index, alpha) in enumerate(alpha_range)
-for (index, beta) in enumerate(beta_range)
+#for (index, alpha) in enumerate(alpha_range)
+#for (index, beta) in enumerate(beta_range)
 
 println("Beta: ",value.(beta))
 
@@ -108,8 +108,8 @@ println("Beta: ",value.(beta))
     end
 
 #*****************************************************
-end
-end
+#end
+#end
 
 if(isfile("A2_results_step1.4_two_price.xlsx"))
     rm("A2_results_step1.4_two_price.xlsx")

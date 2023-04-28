@@ -25,14 +25,16 @@ end
 
 #************************************************************************
 alpha_range=[0.95,0.9,0.8]
-beta_range = 0:0.01:1
+beta_range = 0:0.1:1
 #Defining the global data frame for results
 #CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[])
 CVAR_df = DataFrame(CVAR=Float64[], Exp_profit=Float64[], Beta=Float64[], Alpha=Float64[])
+Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time=Float64[], p_DA=Float64[], delta=Float64[])
+Profit_df= DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[],Profit=Float64[])
 #Strategy_df = DataFrame(Scenario=Float64[],Beta=Float64[], Alpha=Float64[], Time=Float64[], p_DA=Float64[], delta=Float64[])
 #for (index, beta) in enumerate(beta_range)
-for (index, alpha) in enumerate(alpha_range)
-for (index, beta) in enumerate(beta_range)
+#for (index, alpha) in enumerate(alpha_range)
+#for (index, beta) in enumerate(beta_range)
     println("Beta: ",value.(beta))
 
     #************************************************************************
@@ -74,6 +76,12 @@ for (index, beta) in enumerate(beta_range)
             profit[s]=sum((lambda_da[s,t] * value.(p_DA[t]) 
                 + (1-value.(sys_stat[s,t])) * coef_high * lambda_da[s,t] * value.(delta[t,s])
                 + value.(sys_stat[s,t]) * coef_low * lambda_da[s,t] * value.(delta[t,s])) for t=1:T)
+            Profit_temp_df= DataFrame(Scenario=s,Beta=beta, Alpha=alpha,Profit=profit[s])
+            append!(Profit_df, Profit_temp_df)
+            for t in 1:T
+                Strategy_temp_df = DataFrame(Scenario=s,Beta=beta, Alpha=alpha, Time=t, p_DA=value.(p_DA[t]), delta=value.(delta[t,s]))
+                append!(Strategy_df, Strategy_temp_df)
+            end
         end
         #p_DA_df=DataFrame([value.(p_DA)],:auto)
         #delta_df=DataFrame(value.(delta[:, :]),:auto)
@@ -92,8 +100,8 @@ for (index, beta) in enumerate(beta_range)
     else
         println("No optimal solution available")
     end
-end
-end
+#end
+#end
 #************************************************************************
 
 
@@ -103,9 +111,9 @@ end
     end
     #************************************************************************
     XLSX.writetable("A2_results_step1.4_oneprice.xlsx",
-        CVAR = (collect(eachcol(CVAR_df)), names(CVAR_df))    
-        #p_DA = (collect(eachcol(p_DA_df)), names(p_DA_df)),
-        #delta = (collect(eachcol(delta_df)), names(delta_df)),
+        CVAR = (collect(eachcol(CVAR_df)), names(CVAR_df)),    
+        Profit = (collect(eachcol(Profit_df)), names(Profit_df)),
+        Strategy_df = (collect(eachcol(Strategy_df)), names(Strategy_df))
         #profit = (collect(eachcol(profit_df)), names(profit_df))
         )
 
