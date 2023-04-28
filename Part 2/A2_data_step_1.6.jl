@@ -57,7 +57,7 @@ n2 = 550
 set_values = Set{Int}()
 
 # Generate random values until the set contains n unique values
-Random.seed!(5678)
+Random.seed!(1234)
 while length(set_values) < n
     value = rand(1:600)
     push!(set_values, value)

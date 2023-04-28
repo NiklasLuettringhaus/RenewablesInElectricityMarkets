@@ -80,7 +80,7 @@ end
 # PARAMETERS
 #*****************************************
 
-prob = fill(0.005,600)
+prob = fill(1/n,600)
 p_nom = 150 #MW
 S = length(generated_values)
 T = length(scenarios[1][1])
