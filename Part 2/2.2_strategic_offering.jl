@@ -28,12 +28,16 @@ A2_22 = Model(Gurobi.Optimizer)
 @variable(A2_22, mu_up_k[k=1:K]>=0)
 @variable(A2_22, mu_up_s[s=1:S]>=0)
 @variable(A2_22, mu_up_o[o=1:O]>=0)
-@variable(A2_22, mu_up_nm[n=1:N,m=1:N]>=0)
+#@variable(A2_22, mu_up_nm[n=1:N,m=1:N]>=0)
+#m=1:N;Omega[n,m]==1
+@variable(A2_22, mu_up_nm[n=1:N,m=1:N;Omega[n,m]==1]>=0)
 
 @variable(A2_22, mu_down_k[k=1:K]>=0)
 @variable(A2_22, mu_down_s[s=1:S]>=0)
 @variable(A2_22, mu_down_o[o=1:O]>=0)
-@variable(A2_22, mu_down_nm[n=1:N,m=1:N]>=0)   #incluir matriz psi
+#@variable(A2_22, mu_down_nm[n=1:N,m=1:N]>=0)   #incluir matriz psi
+@variable(A2_22, mu_down_nm[n=1:N,m=1:N;Omega[n,m]==1]>=0)
+
 
 @variable(A2_22, lambda[n=1:N])    
 @variable(A2_22, gamma[n=1])     
@@ -41,12 +45,14 @@ A2_22 = Model(Gurobi.Optimizer)
 @variable(A2_22, u_down_k[k=1:K],Bin)
 @variable(A2_22, u_down_s[s=1:S],Bin)
 @variable(A2_22, u_down_o[o=1:O],Bin)
-@variable(A2_22, u_down_nm[n=1:N,m=1:N],Bin)
+#@variable(A2_22, u_down_nm[n=1:N,m=1:N],Bin)
+@variable(A2_22, u_down_nm[n=1:N,m=1:N;Omega[n,m]==1],Bin)
 
 @variable(A2_22, u_up_k[k=1:K],Bin)
 @variable(A2_22, u_up_s[s=1:S],Bin)
 @variable(A2_22, u_up_o[o=1:O],Bin)
-@variable(A2_22, u_up_nm[n=1:N,m=1:N],Bin)
+#@variable(A2_22, u_up_nm[n=1:N,m=1:N],Bin)
+@variable(A2_22, u_up_nm[n=1:N,m=1:N;Omega[n,m]==1],Bin)
 
 @variable(A2_22, theta[n=1:N]>=0) 
 
@@ -67,9 +73,15 @@ A2_22 = Model(Gurobi.Optimizer)
 #@constraint(A2_22,[k=1:K],-alpha_bid[k]-mu_down_k[k]+mu_up_k[k]+lambda[indexin(1, psi_k[k,:])]==0)  
 @constraint(A2_22,[k=1:K],-alpha_bid[k]-mu_down_k[k]+mu_up_k[k]+lambda[findall(x->x==1, psi_k[k,:])[1]]==0) 
 
-@constraint(A2_22,[s=1:S],alpha_offer_s[s]-mu_down_s[s]+mu_up_s[s]-lambda[indexin(1, psi_s[s,:])]==0) 
-@constraint(A2_22,[o=1:O],alpha_offer_o[o]-mu_down_o[o]+mu_up_o[o]-lambda[indexin(1, psi_o[o,:])]==0)  
-@constraint(A2_22,[n=1:N], sum(B[n,m]*(lambda[n]-lambda[m] for m=1:N; m!=n)) + sum(B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n] for  m=1:N; m!=n)) + gamma ==0) 
+#@constraint(A2_22,[s=1:S],alpha_offer_s[s]-mu_down_s[s]+mu_up_s[s]-lambda[indexin(1, psi_s[s,:][1])]==0)
+@constraint(A2_22,[s=1:S],alpha_offer_s[s]-mu_down_s[s]+mu_up_s[s]-lambda[findall(x->x==1, psi_s[s,:])[1]]==0)
+
+#@constraint(A2_22,[o=1:O],alpha_offer_o[o]-mu_down_o[o]+mu_up_o[o]-lambda[indexin(1, psi_o[o,:])]==0)
+@constraint(A2_22,[o=1:O],alpha_offer_o[o]-mu_down_o[o]+mu_up_o[o]-lambda[findall(x->x==1, psi_o[o,:])[1]]==0)
+
+#@constraint(A2_22,[n=1:N], sum(B[n,m]*(lambda[n]-lambda[m]) for m=1:N; m!=n) + sum(B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for  m=1:N;m!=n:) + gamma ==0) 
+@constraint(A2_22,[n=1:N], sum(B[n,m]*(lambda[n]-lambda[m]) for m=1:N if Omega[n,m]==1) + sum(B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for m=1:N if Omega[n,m]==1) + gamma[1] ==0) 
+
 
 #2_KKT_conditions
 @constraint(A2_22,[n=1],theta[n]==0)  
@@ -85,9 +97,14 @@ A2_22 = Model(Gurobi.Optimizer)
 @constraint(A2_22,[o=1:O],mu_down_o[o]<=(1-u_down_o[o])*M)
 
     #Network constraints
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_down_nm[n=1:N,m=1:N]<=(1-u_down_nm[n,m])*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M) 
+
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M) 
+
 
 @constraint(A2_22,[k=1:K],D_max_k[k]-d[k]>=0)
 @constraint(A2_22,[s=1:S],P_max_s[s]-p_s[s]>=0)
@@ -101,9 +118,14 @@ A2_22 = Model(Gurobi.Optimizer)
 @constraint(A2_22,[s=1:S],mu_up_s[s]<=(1-u_up_s[s])*M)
 @constraint(A2_22,[o=1:O],mu_up_o[o]<=(1-u_up_o[o])*M)
 
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_up_nm[n,m]*M) 
-@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_up_nm[n=1:N,m=1:N]<=(1-u_up_nm[n,m])*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_up_nm[n,m]*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_up_nm[n,m]<=(1-u_up_nm[n,m])*M) 
+
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_up_nm[n,m]*M) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_up_nm[n,m]<=(1-u_up_nm[n,m])*M) 
+
 
 #************************************************************************
 
