@@ -80,12 +80,14 @@ A2_22 = Model(Gurobi.Optimizer)
 @constraint(A2_22,[o=1:O],alpha_offer_o[o]-mu_down_o[o]+mu_up_o[o]-lambda[findall(x->x==1, psi_o[o,:])[1]]==0)
 
 #@constraint(A2_22,[n=1:N], sum(B[n,m]*(lambda[n]-lambda[m]) for m=1:N; m!=n) + sum(B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for  m=1:N;m!=n:) + gamma ==0) 
-@constraint(A2_22,[n=1:N], sum(B[n,m]*(lambda[n]-lambda[m]) for m=1:N if Omega[n,m]==1) + sum(B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for m=1:N if Omega[n,m]==1) + gamma[1] ==0) 
+@constraint(A2_22,[n=1:N], sum(Sys_power_base*B[n,m]*(lambda[n]-lambda[m]) for m=1:N if Omega[n,m]==1) + sum(Sys_power_base*B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for m=1:N if Omega[n,m]==1) + gamma[1] ==0) 
 
 
 #2_KKT_conditions
 @constraint(A2_22,[n=1],theta[n]==0)  
-@constraint(A2_22,sum(d[k] for k=1:K) + sum(p_s[s] for s=1:S)+ sum(p_o[o] for o=1:O)==0)
+#@constraint(A2_22,sum(d[k] for k=1:K) + sum(p_s[s] for s=1:S)+ sum(p_o[o] for o=1:O)==0)
+@constraint(A2_22,[n=1:N],sum(d[k] for k=1:K if psi_k[k,n]==1) +sum(Sys_power_base*B[n,m]*(theta[n]-theta[m]) for m=1:N if Omega[n,m]==1) -sum(p_s[s] for s=1:S if psi_s[s,n]==1)- sum(p_o[o] for o=1:O if psi_o[o,n]==1)==0) #corregir
+
 
 #3_KKT_conditions_linearized
 @constraint(A2_22,[k=1:K],d[k]<=u_down_k[k]*M)
