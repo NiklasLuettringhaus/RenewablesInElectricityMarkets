@@ -7,6 +7,7 @@ import XLSX
 using DataFrames
 using XLSX
 
+
 #************************************************************************
 
 #************************************************************************
@@ -73,7 +74,6 @@ A2_22 = Model(Gurobi.Optimizer)
 
 @constraint(A2_22,[o=1:O],alpha_offer_o[o]-mu_down_o[o]+mu_up_o[o]-lambda[findall(x->x==1, psi_o[o,:])[1]]==0)
 
-
 @constraint(A2_22,[n=1:N], sum(Sys_power_base*B[n,m]*(lambda[n]-lambda[m]) for m=1:N if Omega[n,m]==1) + sum(Sys_power_base*B[n,m]*(mu_up_nm[n,m]-mu_up_nm[m,n]) for m=1:N if Omega[n,m]==1) + (n == 1 ? gamma[1] : 0) ==0) 
 #@constraint(A2_22,[n=1:N], sum(Sys_power_base*B[n,m]*(lambda[n]-lambda[m]) for m=1:N if Omega[n,m]==1) + sum(Sys_power_base*B[n,m]*(-mu_down_nm[n,m]+mu_down_nm[m,n]) for m=1:N if Omega[n,m]==1) + (n == 1 ? gamma[1] : 0) ==0) 
 
@@ -131,7 +131,45 @@ if termination_status(A2_22) == MOI.OPTIMAL
         end
     end
 
+    SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
+        - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)
+        - sum(value.(alpha_offer_s[s])*value.(p_s[s]) for s=1:S)
+
+    profit=value.(p_s).*(value.(psi_s)*value.(lambda)-C_s)
+
+
+    DC_flow_df=DataFrame(value.(flow[:, :]),nodes)
+    Ps_nodal_df=DataFrame(value.(p_s[:]')*psi_s,nodes)
+    Po_nodal_df=DataFrame(value.(p_o[:]')*psi_o,nodes)
+    Dk_nodal_df=DataFrame(value.(d[:]')*psi_k,nodes)
+    Clearing_df= DataFrame([value.(lambda[:])],:auto)
+    Price_s_df= DataFrame(Alpha_offer_s=value.(alpha_offer_s[:]), P_s=value.(p_s[:]))
+    Price_o_df= DataFrame(Alpha_offer_o=value.(alpha_offer_o[:]), P_o=value.(p_o[:]))
+    Bid_d_df= DataFrame(Alpha_bid=value.(alpha_bid[:]), D=value.(d[:]))
+    SW_vs_Prof_df=DataFrame(Social_welfare=SW, Profit_max= sum(profit))
+    Profit_df= DataFrame([value.(profit[:])],:auto)
+
 else
     println("No optimal solution available")
 end
+#************************************************************************
+
+#************************************************************************
+if(isfile("A2_results_step_2_2.xlsx"))
+    rm("A2_results_step_2_2.xlsx")
+end
+
+XLSX.writetable("A2_results_step_2_2.xlsx",
+    DC_flow_df=(collect(eachcol(DC_flow_df)), names(DC_flow_df)),
+    Ps_nodal_df=(collect(eachcol(Ps_nodal_df)), names(Ps_nodal_df)),
+    Po_nodal_df=(collect(eachcol(Po_nodal_df)), names(Po_nodal_df)),
+    Dk_nodal_df=(collect(eachcol(Dk_nodal_df)), names(Dk_nodal_df)),
+    Clearing_df= (collect(eachcol(Clearing_df)), names(Clearing_df)),
+    Price_s_df= (collect(eachcol(Price_s_df)), names(Price_s_df)),
+    Price_o_df= (collect(eachcol(Price_o_df)), names(Price_o_df)),
+    Bid_d_df= (collect(eachcol(Bid_d_df)), names(Bid_d_df)),
+    SW_vs_Prof_df=(collect(eachcol(SW_vs_Prof_df)), names(SW_vs_Prof_df)),
+    Profit_df= (collect(eachcol(Profit_df)), names(Profit_df))
+    )
+
 #************************************************************************
