@@ -9,17 +9,102 @@ using Distributions
 P_max_s=[155, 100, 155, 197]
 P_max_o=[ 337.5, 350 ,210 ,80]
 
-Random.seed!(123)
+
+Random.seed!(1234)
 
 # Offer prices Demands 8 different scenarios
-offer_price_factors = rand(0.5:0.1:1.5, 5)
+offer_prices_factor = zeros(8,4)
+
+for i=1:8
+    for j=1:4
+    value = rand(5:15)/10
+    offer_prices_factor[i,j] = value
+    end
+end
+
+offer_prices_factor_dict= Dict()
+for i in 1:size(offer_prices_factor, 1)
+    # Create a vector with the row contents
+    row_vec = offer_prices_factor[i, :]
+    # Add the vector to the dictionary with the row number as the key
+    offer_prices_factor_dict[i] = row_vec
+end
 
 # Amount of demand 10 different possibilities
 
+amount_demand_factor = zeros(10,4)
+
+for i=1:10
+    for j=1:4
+    value = rand(5:15)/10
+    amount_demand_factor[i,j] = value
+    end
+end
+
+amount_demand_factor_dict= Dict()
+for i in 1:size(amount_demand_factor, 1)
+    # Create a vector with the row contents
+    row_vec = amount_demand_factor[i, :]
+    # Add the vector to the dictionary with the row number as the key
+    amount_demand_factor_dict[i] = row_vec
+end
+
+
 # Wind forecast has 25 different possibilities
+wind_factor = zeros(25)
+
+for i=1:25
+    value = rand(5:15)/10
+    wind_factor[i] = value
+end
+
+wind_factor_dict= Dict()
+for i in 1:size(wind_factor, 1)
+    # Create a vector with the row contents
+    row_vec = wind_factor[i, :]
+    # Add the vector to the dictionary with the row number as the key
+    wind_factor_dict[i] = row_vec
+end
+
 
 # Offer Prices non Strat producers 5 different scenarios
+offer_price_non_stra = zeros(5,4)
 
+for i=1:5
+    for j=1:4
+    value = rand(5:15)/10
+    offer_price_non_stra[i,j] = value
+    end
+end
+
+offer_price_non_stra_dict= Dict()
+for i in 1:size(offer_price_non_stra, 1)
+    # Create a vector with the row contents
+    row_vec = offer_price_non_stra[i, :]
+    # Add the vector to the dictionary with the row number as the key
+    offer_price_non_stra_dict[i] = row_vec
+end
+
+
+# Sum all parts to one dictionary with all scenarios
+scenarios=Dict()
+i_d=1
+for w in 1:length(offer_prices_factor_dict)
+    global i_d
+    for p in 1:length(amount_demand_factor_dict)
+        for s in 1:length(wind_factor_dict)
+            for o in 1:length(offer_price_non_stra_dict)
+            scenarios[i_d] = [get(offer_prices_factor_dict, w,0),
+                              get(amount_demand_factor_dict, p,0),
+                              get(wind_factor_dict, s,0), 
+                              get(offer_price_non_stra_dict, o, 0) ]
+                i_d+=1
+            end
+        end
+    end
+end
+
+scenarios
 
 C_s=[15.2, 23.4, 15.2, 19.1]
 alpha_offer_o= [0, 5, 20.1, 24.7]
