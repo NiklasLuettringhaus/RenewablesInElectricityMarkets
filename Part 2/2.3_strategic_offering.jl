@@ -11,7 +11,7 @@ using XLSX
 
 #************************************************************************
 #PARAMETERS
-include("A2_data_step_2.2.jl")
+include("A2_data_step_2.3.jl")
 
 #************************************************************************
 
@@ -154,11 +154,11 @@ end
 #************************************************************************
 
 #************************************************************************
-if(isfile("A2_results_step_2_2.xlsx"))
-    rm("A2_results_step_2_2.xlsx")
+if(isfile("A2_results_step_2_3.xlsx"))
+    rm("A2_results_step_2_3.xlsx")
 end
 
-XLSX.writetable("A2_results_step_2_2.xlsx",
+XLSX.writetable("A2_results_step_2_3.xlsx",
     DC_flow_df=(collect(eachcol(DC_flow_df)), names(DC_flow_df)),
     Ps_nodal_df=(collect(eachcol(Ps_nodal_df)), names(Ps_nodal_df)),
     Po_nodal_df=(collect(eachcol(Po_nodal_df)), names(Po_nodal_df)),

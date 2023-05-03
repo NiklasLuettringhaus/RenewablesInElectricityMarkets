@@ -29,7 +29,7 @@ Omega = [ #n rows and m columns
     0 0 1 1 1 0
 ] 
 
-F = Omega .* 600 #Transmission line capacity in MW
+F = Omega .* 400 #Transmission line capacity in MW
 B = Omega .* 50 #Suceptance in per unit
 Sys_power_base = 337.5  # MVA
 
