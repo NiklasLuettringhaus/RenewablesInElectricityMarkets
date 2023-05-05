@@ -73,10 +73,10 @@ if termination_status(FN) == MOI.OPTIMAL
     DC_flow_df=DataFrame(value.(transpose(f[1, :, :])),nodes)
     PG_df=DataFrame(value.(p_g[:, :]),:auto)
     PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_O,nodes)
-    PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_D,nodes)
-    PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
-    Profit_gen_df=DataFrame(Profit_gen,:auto)
+    #PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_O,nodes)
+    #PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_D,nodes)
+    #PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
+    #Profit_gen_df=DataFrame(Profit_gen,:auto)
 else
     println("No optimal solution available")
 end
@@ -93,13 +93,13 @@ if(isfile("A2_results_step2.1.xlsx"))
 end
 
 XLSX.writetable("A2_results_step2.xlsx",
+    DC_flow= (collect(eachcol(DC_flow_df)), names(DC_flow_df)),
+    Po_nodal = (collect(eachcol(PG_df)), names(PG_df)),
+    Dk_nodal=(collect(eachcol(PD_df)), names(PD_df)),
     DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
-    Flows = (collect(eachcol(DC_flow_df)), names(DC_flow_df)),
-    Generation = (collect(eachcol(PG_df)), names(PG_df)),
-    Demand=(collect(eachcol(PD_df)), names(PD_df)),
     #Nodal_Generation=(collect(eachcol(PG_nodal_df)), names(PG_nodal_df)),
     #Nodal_Demand=(collect(eachcol(PD_nodal_df)), names(PD_nodal_df)),
-    N#odal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
+    #Nodal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
     #Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
     
     )
