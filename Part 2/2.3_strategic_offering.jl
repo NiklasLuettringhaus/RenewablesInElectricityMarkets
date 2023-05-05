@@ -59,6 +59,8 @@ A2_22 = Model(Gurobi.Optimizer)
 - sum(alpha_offer_o[o]*p_o[o] for o=1:O)
 - sum(mu_up_k[k]*D_max_k[k] for k=1:K) 
 - sum(mu_up_o[o]*P_max_o[o] for o=1:O)
+- sum(mu_up_nm[n,m]*F[n,m] for n=1:N,m=1:N if Omega[n,m]==1)
+- sum(mu_down_nm[n,m]*F[n,m] for n=1:N,m=1:N if Omega[n,m]==1) #maybe redundant
 )
 
 
