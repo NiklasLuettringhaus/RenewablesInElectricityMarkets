@@ -69,14 +69,22 @@ if termination_status(FN) == MOI.OPTIMAL
     println("Market clearing price:")
     print(DA_price)  #Print equilibrium price
     println("\n")
+
+
+    #cg[g]*p_g[g]
+    SW= sum(U_d[d]*value.(p_d[d]) for d=1:D) 
+        - sum(cg[g]*value.(p_g[g]) for g=1:G)
+
+    profit=value.(p_g).*(value.(psi_O)*value.(DA_price)-cg)
+
     DA_price_df=DataFrame(transpose(DA_price), nodes)
-    DC_flow_df=DataFrame(value.(transpose(f[1, :, :])),nodes)
-    PG_df=DataFrame(value.(p_g[:, :]),:auto)
-    PD_df=DataFrame(value.(p_d[:, :]),:auto)
-    PG_nodal_df=DataFrame(value.(p_g[:, :])*psi_O,nodes)
-    PD_nodal_df=DataFrame(value.(p_d[:, :])*psi_D,nodes)
-    PW_nodal_zonal_df=DataFrame(value.(p_w_grid[:, :])*psi_w,nodes)
-    Profit_gen_df=DataFrame(Profit_gen,:auto)
+    DC_flow_df=DataFrame(value.(transpose(f[:, :])),nodes)
+    Pg_nodal_df=DataFrame(value.(p_g[:]')*psi_O,nodes)
+    Pd_nodal_df=DataFrame(value.(d[:]')*psi_D,nodes)
+    Price_g_df= DataFrame(Alpha_offer_o=psi_O*value.(DA_price), P_g=value.(p_g))
+    Bid_d_df= DataFrame(Alpha_bid=value.(U_d[:]), D=value.(p_d[:]))
+    SW_vs_Prof_df=DataFrame(Social_welfare=SW, Profit_max= sum(profit))
+    Profit_df= DataFrame([value.(profit[:])],:auto)
 else
     println("No optimal solution available")
 end
@@ -89,19 +97,18 @@ println(PG_df)
 
 #**************************
 if(isfile("A2_results_step2.1.xlsx"))
-    rm("A2_results_step2.xlsx")
+    rm("A2_results_step2.1.xlsx")
 end
 
-XLSX.writetable("A2_results_step2.xlsx",
-    DA_Prices = (collect(eachcol(DA_price_df)), names(DA_price_df)),
-    Flows = (collect(eachcol(DC_flow_df)), names(DC_flow_df)),
-    Generation = (collect(eachcol(PG_df)), names(PG_df)),
-    Demand=(collect(eachcol(PD_df)), names(PD_df)),
-    #Nodal_Generation=(collect(eachcol(PG_nodal_df)), names(PG_nodal_df)),
-    #Nodal_Demand=(collect(eachcol(PD_nodal_df)), names(PD_nodal_df)),
-    N#odal_Wind=(collect(eachcol(PW_nodal_zonal_df)), names(PW_nodal_zonal_df)),
-    #Profit_gen=(collect(eachcol(Profit_gen_df)), names(Profit_gen_df)),
-    
+XLSX.writetable("A2_results_step2.1.xlsx",
+    DC_flow= (collect(eachcol(DC_flow_df)), names(DC_flow_df)),
+    Pg_nodal = (collect(eachcol(Pg_nodal_df)), names(Pg_nodal_df)),
+    Pd_nodal=(collect(eachcol(Pd_nodal_df)), names(Pd_nodal_df)),
+    Clearing = (collect(eachcol(DA_price_df)), names(DA_price_df)),
+    Price_g = (collect(eachcol(Price_g_df)), names(Price_g_df)),
+    Bid_d= (collect(eachcol(Bid_d_df)), names(Bid_d_df)),
+    SW_vs_Prof= (collect(eachcol(SW_vs_Prof_df)), names(SW_vs_Prof_df)),
+    Profit= (collect(eachcol(Profit_df)), names(Profit_df))
     )
 
 #*****************************************************

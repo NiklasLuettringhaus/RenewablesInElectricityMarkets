@@ -18,7 +18,6 @@ data_states_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_states)
 data_price_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_price)) if i <= 20)
 data_wind_dict = Dict(i => vec(c) for (i, c) in enumerate(eachcol(data_wind)) if i <= 10)
 
-data_wind
 #Create an empty main dictionary for all 600 scnearios
 #loop through each dictionary for wind, power and state. Write the keys of each as a string to create a unique key that lets us identify each scenario and grab the values (arrays) of each dictionary
 #=
