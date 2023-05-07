@@ -7,7 +7,7 @@ using Distributions
 
 #Generation units operationals details
 P_max_s=[155, 100, 155, 197]
-P_max_o=[ 337.5, 350 ,210 ,80]
+P_max_o=[450, 350 ,210 ,80]
 
 
 Random.seed!(1234)
@@ -36,7 +36,7 @@ amount_demand_factor = zeros(10,4)
 
 for i=1:10
     for j=1:4
-    value = rand(5:15)/10
+    value = rand(3:11)/10
     amount_demand_factor[i,j] = value
     end
 end
@@ -54,7 +54,7 @@ end
 wind_factor = zeros(25)
 
 for i=1:25
-    value = rand(5:15)/10
+    value = rand(2:10)/10
     wind_factor[i] = value
 end
 
@@ -104,16 +104,45 @@ for w in 1:length(offer_prices_factor_dict)
     end
 end
 
-scenarios
+sorted_scen = sort(scenarios)
+
+SC = 100
+set_values = Set{Int}()
+
+# Generate random values until the set contains n unique values
+Random.seed!(1234)
+while length(set_values) < SC
+    value = rand(1:10000)
+    push!(set_values, value)
+end
+
+# Convert the set to an array and sort it
+generated_values = sort(collect(set_values))
+
+# Create an array with all possible values and remove the generated ones
+all_values = collect(1:10000)
+new_values = setdiff(all_values, generated_values)
+
+
+wind_prod=zeros(SC,1)
+alpha_bid=zeros(SC, 4)
+demand=zeros(SC, 4)
+alpha_offer_o=zeros(SC, 4)
+for i in 1:SC
+    wind_prod[i,:]= scenarios[generated_values[i]][3]
+    alpha_bid[i,:]=scenarios[generated_values[i]][1]
+    demand[i,:]=scenarios[generated_values[i]][2]
+    alpha_offer_o[i,:]=scenarios[generated_values[i]][4]
+end
 
 C_s=[15.2, 23.4, 15.2, 19.1]
-alpha_offer_o= [0, 5, 20.1, 24.7]
+alpha_offer_o_fix= [0, 5, 20.1, 24.7]
 
 ramp_up_down_limit = [90, 85, 90, 120, 0 , 350, 170, 80]
 
 #Demand details
 D_max_k =  [200, 400, 300, 250]
-alpha_bid = [26.5, 24.7, 23.1, 22.5]
+alpha_bid_fix = [26.5, 24.7, 23.1, 22.5]
 
 random = []
 
