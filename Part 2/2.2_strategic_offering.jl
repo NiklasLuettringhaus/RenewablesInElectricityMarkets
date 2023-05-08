@@ -97,6 +97,14 @@ A2_22 = Model(Gurobi.Optimizer)
 
     #Network constraints
 
+#Network constraints
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M) 
+
+#Network constraints
+
+
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M[7]) 
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M[8]) 

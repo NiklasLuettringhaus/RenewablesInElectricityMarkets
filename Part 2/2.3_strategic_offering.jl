@@ -94,7 +94,7 @@ A2_22 = Model(Gurobi.Optimizer)
 @constraint(A2_22,[s=1:S],mu_down_s[s]<=(1-u_down_s[s])*M[5])
 @constraint(A2_22,[o=1:O],mu_down_o[o]<=(1-u_down_o[o])*M[6])
 
-    #Network constraints
+#Network constraints
 
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M[7]) 
@@ -132,7 +132,7 @@ if termination_status(A2_22) == MOI.OPTIMAL
         end
     end
 
-    SW = sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
+    SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
         - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)
         - sum(value.(alpha_offer_s[s])*value.(p_s[s]) for s=1:S)
 
