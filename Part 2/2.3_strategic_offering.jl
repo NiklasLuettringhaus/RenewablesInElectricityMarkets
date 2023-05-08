@@ -132,7 +132,11 @@ if termination_status(A2_22) == MOI.OPTIMAL
         end
     end
 
+<<<<<<< Updated upstream
     SW = sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
+=======
+    SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
+>>>>>>> Stashed changes
         - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)
         - sum(value.(alpha_offer_s[s])*value.(p_s[s]) for s=1:S)
 

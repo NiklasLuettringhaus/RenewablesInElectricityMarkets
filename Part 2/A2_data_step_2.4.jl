@@ -36,7 +36,15 @@ amount_demand_factor = zeros(10,4)
 
 for i=1:10
     for j=1:4
+<<<<<<< Updated upstream
     value = rand(3:11)/10
+=======
+<<<<<<< Updated upstream
+    value = rand(5:12)/10
+=======
+    value = rand(5:15)/10
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     amount_demand_factor[i,j] = value
     end
 end
