@@ -13,6 +13,7 @@ using XLSX
 #PARAMETERS
 include("A2_data_step_2.2.jl")
 
+
 #************************************************************************
 
 #************************************************************************
@@ -86,36 +87,47 @@ A2_22 = Model(Gurobi.Optimizer)
 
 
 #3_KKT_conditions_linearized
-@constraint(A2_22,[k=1:K],d[k]<=u_down_k[k]*M)
-@constraint(A2_22,[s=1:S],p_s[s]<=u_down_s[s]*M) 
-@constraint(A2_22,[o=1:O],p_o[o]<=u_down_o[o]*M) 
+@constraint(A2_22,[k=1:K],d[k]<=u_down_k[k]*M[1])
+@constraint(A2_22,[s=1:S],p_s[s]<=u_down_s[s]*M[2]) 
+@constraint(A2_22,[o=1:O],p_o[o]<=u_down_o[o]*M[3]) 
 
-@constraint(A2_22,[k=1:K],mu_down_k[k]<=(1-u_down_k[k])*M)
-@constraint(A2_22,[s=1:S],mu_down_s[s]<=(1-u_down_s[s])*M)
-@constraint(A2_22,[o=1:O],mu_down_o[o]<=(1-u_down_o[o])*M)
+@constraint(A2_22,[k=1:K],mu_down_k[k]<=(1-u_down_k[k])*M[4])
+@constraint(A2_22,[s=1:S],mu_down_s[s]<=(1-u_down_s[s])*M[5])
+@constraint(A2_22,[o=1:O],mu_down_o[o]<=(1-u_down_o[o])*M[6])
 
+<<<<<<< Updated upstream
     #Network constraints
+=======
+<<<<<<< HEAD
+#Network constraints
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
+#@constraint(A2_22,[n=1:N,m=1:N; m!=n],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M) 
+=======
+    #Network constraints
+>>>>>>> 897a85c67793da83c489e11e9ba4a8dc0952a8c7
+>>>>>>> Stashed changes
 
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
-@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M) 
-@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_down_nm[n,m]*M[7]) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_down_nm[n,m]<=(1-u_down_nm[n,m])*M[8]) 
 
 
 @constraint(A2_22,[k=1:K],D_max_k[k]-d[k]>=0)
 @constraint(A2_22,[s=1:S],P_max_s[s]-p_s[s]>=0)
 @constraint(A2_22,[o=1:O],P_max_o[o]-p_o[o]>=0)
 
-@constraint(A2_22,[k=1:K],D_max_k[k]-d[k]<=u_up_k[k]*M)
-@constraint(A2_22,[s=1:S],P_max_s[s]-p_s[s]<=u_up_s[s]*M)
-@constraint(A2_22,[o=1:O],P_max_o[o]-p_o[o]<=u_up_o[o]*M)
+@constraint(A2_22,[k=1:K],D_max_k[k]-d[k]<=u_up_k[k]*M[9])
+@constraint(A2_22,[s=1:S],P_max_s[s]-p_s[s]<=u_up_s[s]*M[10])
+@constraint(A2_22,[o=1:O],P_max_o[o]-p_o[o]<=u_up_o[o]*M[11])
 
-@constraint(A2_22,[k=1:K],mu_up_k[k]<=(1-u_up_k[k])*M)
-@constraint(A2_22,[s=1:S],mu_up_s[s]<=(1-u_up_s[s])*M)
-@constraint(A2_22,[o=1:O],mu_up_o[o]<=(1-u_up_o[o])*M)
+@constraint(A2_22,[k=1:K],mu_up_k[k]<=(1-u_up_k[k])*M[12])
+@constraint(A2_22,[s=1:S],mu_up_s[s]<=(1-u_up_s[s])*M[13])
+@constraint(A2_22,[o=1:O],mu_up_o[o]<=(1-u_up_o[o])*M[14])
 
 @constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]>=0)  
-@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_up_nm[n,m]*M) 
-@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_up_nm[n,m]<=(1-u_up_nm[n,m])*M) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],-Sys_power_base*B[n,m]*(theta[n]-theta[m])+F[n,m]<=u_up_nm[n,m]*M[15]) 
+@constraint(A2_22,[n=1:N,m=1:N;Omega[n,m]==1],mu_up_nm[n,m]<=(1-u_up_nm[n,m])*M[16]) 
 
 #************************************************************************
 
@@ -131,6 +143,18 @@ if termination_status(A2_22) == MOI.OPTIMAL
         flow[n,m]=Sys_power_base*B[n,m]*(value.(theta[n])-value.(theta[m]))
         end
     end
+
+    #=
+    hold_c = zeros(N, N)
+    hold_c2 = zeros(N, N)
+    for n=1:N
+        for m=1:N if Omega[n,m]==1
+        hold_c[n,m]=value.(mu_up_nm[n,m])
+        hold_c2[n,m]=(1-value.(u_up_nm[n,m]))*M[16]
+        end
+        end
+    end
+    =#
 
     SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
         - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)
