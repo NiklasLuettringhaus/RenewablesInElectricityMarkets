@@ -30,6 +30,7 @@ for i in 1:size(offer_prices_factor, 1)
     offer_prices_factor_dict[i] = row_vec
 end
 
+
 # Amount of demand 10 different possibilities
 
 amount_demand_factor = zeros(10,4)
@@ -107,6 +108,7 @@ end
 sorted_scen = sort(scenarios)
 
 SC = 100
+prob = 1/SC
 set_values = Set{Int}()
 
 # Generate random values until the set contains n unique values
