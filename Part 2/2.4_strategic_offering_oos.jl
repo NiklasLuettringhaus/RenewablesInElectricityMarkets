@@ -23,8 +23,8 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,d[k=1:K, sc=1:SC]>=0) #load of demand
 @variable(FN,p_o[o=1:O, sc=1:SC]>=0) #power scheduled of generetor g
 
-@variable(FN,theta[n=1:N]) #voltage angle at each bus
-@variable(FN,f[n=1:N,m=1:N]) #DC flows between nodes n to m
+@variable(FN,theta[n=1:N,sc=1:SC]) #voltage angle at each bus
+@variable(FN,f[n=1:N,m=1:N,sc=1:SC]) #DC flows between nodes n to m
 
 
 @objective(FN, Max, sum(prob * alpha_bid[sc,k]*alpha_bid_fix[k]*d[k,sc] for d=1:D, sc=1:SC)  #Revenue from demand
@@ -33,22 +33,23 @@ FN = Model(Gurobi.Optimizer)
 
 #Capacity Limits
 @constraint(FN,[k=1:K, sc=1:SC], d[k] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
-@constraint(FN,[o=2:O, sc=1:SC], p_o[o,sc] <= P_max_o[o])           #Generation limits constraint
+@constraint(FN,[o=2:O, sc=1:SC], p_o[o,sc] <= P_max_o[o])           #non-strategic Generation limits constraint
 @constraint(FN,[o=1, sc=1:SC], p_o[o,sc] <= P_max_o[o]*wind_prod[sc,1]) #Wind farm production constraint
 
 #Power Balance
-@constraint(FN, Balance[n=1:N, sc=1:SC], sum(d[k,sc] for k=1:K if psi_D[k,n]==1) 
+@constraint(FN, Balance[n=1:N, sc=1:SC], sum(d[k,sc] for k=1:K if psi_k[k,n]==1) 
                                 + sum(f[n,m] for m=1:N if F[n,m]>0) 
-                                - sum(p_o[o,] for g=1:G if psi_O[g,n]==1)
+                                - sum(p_o[o,sc] for o=1:O if psi_o[o,n]==1)
+                                - sum(p_s[s,sc] for o=1:O if psi_s[s,n]==1) 
                                 ==0)
 
 #Ramping up and down constraints
 
 #Power Flow constraints
-@constraint(FN,[n=1:N,m=1:N],f[n,m]<=F[n,m]) # Max Capacity of line connecting bus n to m
-@constraint(FN,[n=1:N,m=1:N],f[n,m]>=-F[n,m]) # Min Capacity of line connecting bus n to m
-@constraint(FN,theta[1]== 0) # Voltage angle at the reference bus
-@constraint(FN,[n=1:N,m=1:N], f[n,m]==Sys_power_base*B[n,m]*(theta[n]-theta[m])) #Power flow constraints
+@constraint(FN,[n=1:N,m=1:N,sc=1:SC],f[n,m,sc]<=F[n,m]) # Max Capacity of line connecting bus n to m
+@constraint(FN,[n=1:N,m=1:N,sc=1:SC],f[n,m,sc]>=-F[n,m]) # Min Capacity of line connecting bus n to m
+@constraint(FN,[sc=1:SC],theta[1,sc]== 0) # Voltage angle at the reference bus
+@constraint(FN,[n=1:N,m=1:N, sc=1:SC], f[n,m,sc]==Sys_power_base*B[n,m]*(theta[n,sc]-theta[m,sc])) #Power flow constraints
 
 
 #************************************************************************
