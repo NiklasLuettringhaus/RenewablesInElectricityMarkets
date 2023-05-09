@@ -36,6 +36,7 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[k=1:K, sc=1:SC], d[k] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
 @constraint(FN,[o=2:O, sc=1:SC], p_o[o,sc] <= P_max_o[o])           #Generation limits constraint
 @constraint(FN,[o=1, sc=1:SC], p_o[o,sc] <= P_max_o[o]*wind_prod[sc,1]) #Wind farm production constraint
+@constraint(FN,[s=1:S, sc=1:SC], p_s[s,sc] <= P_max_s[s]) #Generation limit of strategic producers  
 
 #Power Balance
 @constraint(FN, Balance[n=1:N], sum(p_d[d] for d=1:D if psi_D[d,n]==1) 
