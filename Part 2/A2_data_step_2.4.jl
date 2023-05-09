@@ -13,21 +13,21 @@ P_max_o=[450, 350 ,210 ,80]
 Random.seed!(1234)
 
 # Offer prices Demands 8 different scenarios
-offer_prices_factor = zeros(8,4)
+bid_prices = zeros(8,4)
 
 for i=1:8
     for j=1:4
     value = rand(5:15)/10
-    offer_prices_factor[i,j] = value
+    bid_prices[i,j] = value
     end
 end
 
-offer_prices_factor_dict= Dict()
-for i in 1:size(offer_prices_factor, 1)
+bid_prices_dict= Dict()
+for i in 1:size(bid_prices, 1)
     # Create a vector with the row contents
-    row_vec = offer_prices_factor[i, :]
+    row_vec = bid_prices[i, :]
     # Add the vector to the dictionary with the row number as the key
-    offer_prices_factor_dict[i] = row_vec
+    bid_prices_dict[i] = row_vec
 end
 
 
@@ -37,7 +37,7 @@ amount_demand_factor = zeros(10,4)
 
 for i=1:10
     for j=1:4
-    value = rand(3:11)/10
+    value = rand(5:11)/10
     amount_demand_factor[i,j] = value
     end
 end
@@ -55,7 +55,7 @@ end
 wind_factor = zeros(25)
 
 for i=1:25
-    value = rand(2:10)/10
+    value = rand(10:75)/100
     wind_factor[i] = value
 end
 
@@ -90,12 +90,12 @@ end
 # Sum all parts to one dictionary with all scenarios
 scenarios=Dict()
 i_d=1
-for w in 1:length(offer_prices_factor_dict)
+for w in 1:length(bid_prices_dict)
     global i_d
     for p in 1:length(amount_demand_factor_dict)
         for s in 1:length(wind_factor_dict)
             for o in 1:length(offer_price_non_stra_dict)
-            scenarios[i_d] = [get(offer_prices_factor_dict, w,0),
+            scenarios[i_d] = [get(bid_prices_dict, w,0),
                               get(amount_demand_factor_dict, p,0),
                               get(wind_factor_dict, s,0), 
                               get(offer_price_non_stra_dict, o, 0) ]
@@ -107,7 +107,7 @@ end
 
 sorted_scen = sort(scenarios)
 
-SC = 100
+SC = 20
 prob = 1/SC
 set_values = Set{Int}()
 
@@ -157,9 +157,9 @@ Omega = [ #n rows and m columns
     0 1 0 0 1 1
     0 0 0 1 0 1
     0 0 1 1 1 0
-] 
+]
 
-F = Omega .* 400 #Transmission line capacity in MW
+F = Omega .* 600 #Transmission line capacity in MW
 B = Omega .* 50 #Suceptance in per unit
 Sys_power_base = 337.5  # MVA
 
@@ -188,4 +188,40 @@ psi_k[2,4]=1;
 psi_k[3,5]=1;
 psi_k[4,6]=1;
 
-M=100000 #Big M constraint
+#Big M constraint
+
+#=M=[100000 
+100000 
+100000
+ 100 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 80 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000]
+ =#
+
+M=[100000 
+ 100000 
+ 100000
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000
+ 100000 
+ 100000 
+ 100000 
+ 100000 
+ 100000]
+ 
