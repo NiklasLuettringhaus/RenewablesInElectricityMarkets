@@ -1,4 +1,4 @@
-#Assignment 2, Data file Step 1.1
+#Assignment 2, Data file Step 2.4 oos
 
 using CSV
 using DataFrames
@@ -131,10 +131,10 @@ alpha_bid=zeros(SC, 4)
 demand=zeros(SC, 4)
 alpha_offer_o=zeros(SC, 4)
 for i in 1:SC
-    wind_prod[i,:]= scenarios[generated_values[i]][3]
-    alpha_bid[i,:]=scenarios[generated_values[i]][1]
-    demand[i,:]=scenarios[generated_values[i]][2]
-    alpha_offer_o[i,:]=scenarios[generated_values[i]][4]
+    wind_prod[i,:]= scenarios[new_values[i]][3]
+    alpha_bid[i,:]=scenarios[new_values[i]][1]
+    demand[i,:]=scenarios[new_values[i]][2]
+    alpha_offer_o[i,:]=scenarios[new_values[i]][4]
 end
 
 C_s=[15.2, 23.4, 15.2, 19.1]
