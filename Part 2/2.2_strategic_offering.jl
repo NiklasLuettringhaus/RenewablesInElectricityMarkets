@@ -153,9 +153,7 @@ if termination_status(A2_22) == MOI.OPTIMAL
     end
     =#
 
-    SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) 
-        - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)
-        - sum(value.(alpha_offer_s[s])*value.(p_s[s]) for s=1:S)
+    SW= sum(alpha_bid[k]*value.(d[k]) for k=1:K) - sum(alpha_offer_o[o]*value.(p_o[o]) for o=1:O)- sum(value.(alpha_offer_s[s])*value.(p_s[s]) for s=1:S)
 
     profit=value.(p_s).*(value.(psi_s)*value.(lambda)-C_s)
 
