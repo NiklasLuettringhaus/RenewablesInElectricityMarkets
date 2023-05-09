@@ -1,4 +1,4 @@
-#Assignment 2, Data file Step 1.1
+#Assignment 2, Data file Step 2.4 oos
 
 using CSV
 using DataFrames
@@ -107,13 +107,13 @@ end
 
 sorted_scen = sort(scenarios)
 
-SC = 20
+SC = 10000-20
 prob = 1/SC
 set_values = Set{Int}()
 
 # Generate random values until the set contains n unique values
 Random.seed!(1234)
-while length(set_values) < SC
+while length(set_values) < 20
     value = rand(1:10000)
     push!(set_values, value)
 end
@@ -125,20 +125,21 @@ generated_values = sort(collect(set_values))
 all_values = collect(1:10000)
 new_values = setdiff(all_values, generated_values)
 
-
 wind_prod=zeros(SC,1)
 alpha_bid=zeros(SC, 4)
 demand=zeros(SC, 4)
 alpha_offer_o=zeros(SC, 4)
 for i in 1:SC
-    wind_prod[i,:]= scenarios[generated_values[i]][3]
-    alpha_bid[i,:]=scenarios[generated_values[i]][1]
-    demand[i,:]=scenarios[generated_values[i]][2]
-    alpha_offer_o[i,:]=scenarios[generated_values[i]][4]
+    wind_prod[i,:]= scenarios[new_values[i]][3]
+    alpha_bid[i,:]=scenarios[new_values[i]][1]
+    demand[i,:]=scenarios[new_values[i]][2]
+    alpha_offer_o[i,:]=scenarios[new_values[i]][4]
 end
 
-C_s=[15.2, 23.4, 15.2, 19.1]
-alpha_offer_o_fix= [0, 5, 20.1, 24.7]
+# Generator offer prices
+C_s =[15.2, 23.4, 15.2, 19.1] # Costs of stragic producers
+alpha_offer_o_fix = [0, 5, 20.1, 24.7] # Offer prices non strategic producers
+alpha_offer_s = [17.29, 24.95, 14.32, 24.95] #In sample offer prices for strategic producers
 
 ramp_up_down_limit = [90, 85, 90, 120, 0 , 350, 170, 80]
 
