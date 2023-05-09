@@ -29,11 +29,11 @@ FN = Model(Gurobi.Optimizer)
 
 
 @objective(FN, Max, sum(prob * alpha_bid[sc,k]*alpha_bid_fix[k]*d[k,sc] for k=1:K, sc=1:SC)  #Revenue from demand
-            - sum(prob * alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*p_o[o] for o=1:O, sc=1:SC)  
+            - sum(prob * alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*p_o[o,sc] for o=1:O, sc=1:SC)  
             - sum(prob * alpha_offer_s[s]*p_s[s,sc] for s=1:S, sc=1:SC))
 
 #Capacity Limits
-@constraint(FN,[k=1:K, sc=1:SC], d[k] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
+@constraint(FN,[k=1:K, sc=1:SC], d[k,sc] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
 @constraint(FN,[o=2:O, sc=1:SC], p_o[o,sc] <= P_max_o[o])           #non-strategic Generation limits constraint
 @constraint(FN,[o=1, sc=1:SC], p_o[o,sc] <= P_max_o[o]*wind_prod[sc,1]) #Wind farm production constraint
 @constraint(FN,[s=1:S, sc=1:SC], p_s[s,sc] <= P_max_s[s]) #Generation limit of strategic producers  
