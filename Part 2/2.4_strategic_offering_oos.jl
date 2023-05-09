@@ -20,16 +20,17 @@ include("A2_data_step_2.4_oos.jl")
 # Model
 FN = Model(Gurobi.Optimizer)
 
-@variable(FN,d[k=1:K, sc=1:SC]>=0) #load of demand
-@variable(FN,p_o[o=1:O, sc=1:SC]>=0) #power scheduled of generetor g
+@variable(FN,p_d[d=1:D]>=0) #load of demand
+@variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
+@variable(FN,p_s[s=1:S]>=0) #power scheduled of strategic generetor g
 
 @variable(FN,theta[n=1:N]) #voltage angle at each bus
 @variable(FN,f[n=1:N,m=1:N]) #DC flows between nodes n to m
 
 
-@objective(FN, Max, sum(prob * alpha_bid[sc,k]*alpha_bid_fix[k]*d[k,sc] for d=1:D, sc=1:SC)  #Revenue from demand
-            - sum(prob * alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*p_o[o] for o=1:O, sc=1:SC)  
-            - sum(cg[g]*p_g[g] for g=1:G)) # Production cost + start-up cost conventional generator
+@objective(FN, Max, sum(alpha_bid[sc,k]*alpha_bid_fix[k]*p_d[d] for d=1:D)  #Revenue from demand
+            - sum(cg[g]*p_g[g] for g=1:G)  
+            - sum(alpha_offer_s[s]*p_s[s] for g=1:S)) # Production cost + start-up cost conventional generator
 
 #Capacity Limits
 @constraint(FN,[k=1:K, sc=1:SC], d[k] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
@@ -37,7 +38,7 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[o=1, sc=1:SC], p_o[o,sc] <= P_max_o[o]*wind_prod[sc,1]) #Wind farm production constraint
 
 #Power Balance
-@constraint(FN, Balance[n=1:N, sc=1:SC], sum(d[k,sc] for k=1:K if psi_D[k,n]==1) 
+@constraint(FN, Balance[n=1:N], sum(p_d[d] for d=1:D if psi_D[d,n]==1) 
                                 + sum(f[n,m] for m=1:N if F[n,m]>0) 
                                 - sum(p_o[o,] for g=1:G if psi_O[g,n]==1)
                                 ==0)
