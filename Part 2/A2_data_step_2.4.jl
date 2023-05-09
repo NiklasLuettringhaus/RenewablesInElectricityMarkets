@@ -37,7 +37,7 @@ amount_demand_factor = zeros(10,4)
 
 for i=1:10
     for j=1:4
-    value = rand(3:11)/10
+    value = rand(5:11)/10
     amount_demand_factor[i,j] = value
     end
 end

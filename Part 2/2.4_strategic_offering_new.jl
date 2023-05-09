@@ -157,10 +157,18 @@ if termination_status(A2_22) == MOI.OPTIMAL
         - sum(prob * alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*value.(p_o[o,sc]) for o=1:O, sc=1:SC)
         - sum(prob * value.(alpha_offer_s[s])*value.(p_s[s,sc]) for s=1:S, sc=1:SC)
 
-    expected_profit = zeros(N)
+    #=expected_profit = zeros(N)
     for n=1:N
         expected_profit[n] = sum(prob * value.(p_s[s,sc]).*(value.(psi_s[s,n])*value.(lambda[n,sc])-C_s[s]) for s=1:S, sc=1:SC)
     end
+    =#
+
+    profit_scen = zeros(SC)
+    for sc=1:SC
+        profit_scen[sc] = sum(value.(p_s[s,sc])*psi_s[s,n]*value.(lambda[n,sc]) for s=1:S, n=1:N)- sum(value.(p_s[s,sc])*C_s[s] for s=1:S)
+    end
+
+    expected_profit = sum(prob * profit_scen[sc] for sc=1:SC)
 
     DC_flow_df=DataFrame(value.(flow[:, :]),nodes)
     Ps_nodal_df=DataFrame(value.(p_s[:,:]')*psi_s,nodes)
@@ -170,8 +178,8 @@ if termination_status(A2_22) == MOI.OPTIMAL
     Price_s_df= DataFrame([value.(alpha_offer_s[:])], :auto)
     #Price_o_df= DataFrame(Alpha_offer_o=(value.(alpha_offer_o[:])*), P_o=value.(p_o[:]))
     #Bid_d_df= DataFrame(Alpha_bid=value.(alpha_bid[:]), D=value.(d[:]))
-    SW_vs_Prof_df=DataFrame(Social_welfare=SW, Profit_max= sum(expected_profit))
-    Profit_df= DataFrame([value.(profit[:])],:auto)
+    SW_vs_Prof_df=DataFrame(Social_welfare=SW, Profit_max= sum(profit_scen))
+    #Profit_df= DataFrame(Expected_profit=expected_profit,:auto)
 
 else
     println("No optimal solution available")
