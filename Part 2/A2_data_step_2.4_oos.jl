@@ -107,13 +107,13 @@ end
 
 sorted_scen = sort(scenarios)
 
-SC = 20
+SC = 9980
 prob = 1/SC
 set_values = Set{Int}()
 
 # Generate random values until the set contains n unique values
 Random.seed!(1234)
-while length(set_values) < SC
+while length(set_values) < 20
     value = rand(1:10000)
     push!(set_values, value)
 end
@@ -160,7 +160,7 @@ Omega = [ #n rows and m columns
     0 0 1 1 1 0
 ]
 
-F = Omega .* 600 #Transmission line capacity in MW
+F = Omega .* 601 #Transmission line capacity in MW
 B = Omega .* 50 #Suceptance in per unit
 Sys_power_base = 337.5  # MVA
 
