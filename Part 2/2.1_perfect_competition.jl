@@ -74,8 +74,7 @@ if termination_status(FN) == MOI.OPTIMAL
 
 
     #cg[g]*p_g[g]
-    SW= sum(U_d[d]*value.(p_d[d]) for d=1:D) 
-        - sum(cg[g]*value.(p_g[g]) for g=1:G)
+    SW= sum(U_d[d]*value.(p_d[d]) for d=1:D) - sum(cg[g]*value.(p_g[g]) for g=1:G)
 
     profit=value.(p_g).*(value.(psi_O)*value.(DA_price)-cg)
 
@@ -83,7 +82,7 @@ if termination_status(FN) == MOI.OPTIMAL
     DC_flow_df=DataFrame(value.(transpose(f[:, :])),nodes)
     Pg_nodal_df=DataFrame(value.(p_g[:]')*psi_O,nodes)
     Pd_nodal_df=DataFrame(value.(p_d[:]')*psi_D,nodes)
-    Price_g_df= DataFrame(Alpha_offer_o=psi_O*value.(DA_price), P_g=value.(p_g))
+    Price_g_df= DataFrame(Market_price=psi_O*value.(DA_price), P_g=value.(p_g),C_g=cg)
     Bid_d_df= DataFrame(Alpha_bid=value.(U_d[:]), D=value.(p_d[:]))
     SW_vs_Prof_df=DataFrame(Social_welfare=SW, Profit_max= sum(profit))
     Profit_df= DataFrame([value.(profit[:])],:auto)
