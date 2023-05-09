@@ -58,8 +58,8 @@ A2_22 = Model(Gurobi.Optimizer)
 - sum(prob * alpha_offer_o[sc, o]*alpha_offer_o_fix[o]*p_o[o, sc] for o=1:O, sc=1:SC)
 - sum(prob * mu_up_k[k, sc]*D_max_k[k]*demand[sc,k] for k=1:K, sc=1:SC) 
 - sum(prob * mu_up_o[o,sc]*P_max_o[o] for o=2:O, sc=1:SC) - sum(prob * mu_up_o[1, sc]*P_max_o[1]*wind_prod[sc,1] for sc=1:SC)
-- sum(mu_up_nm[sc,n,m]*F[n,m] for sc=1:SC,n=1:N,m=1:N if Omega[n,m]==1)
-- sum(mu_down_nm[sc,n,m]*F[n,m] for sc=1:SC,n=1:N,m=1:N if Omega[n,m]==1)
+- sum(prob * mu_up_nm[sc,n,m]*F[n,m] for sc=1:SC,n=1:N,m=1:N if Omega[n,m]==1)
+- sum(prob * mu_down_nm[sc,n,m]*F[n,m] for sc=1:SC,n=1:N,m=1:N if Omega[n,m]==1)
 )
 
 
@@ -138,12 +138,14 @@ if termination_status(A2_22) == MOI.OPTIMAL
         - sum(prob * alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*value.(p_o[o,sc]) for o=1:O, sc=1:SC)
         - sum(prob * value.(alpha_offer_s[s])*value.(p_s[s,sc]) for s=1:S, sc=1:SC)
 
-    profit=zeros(S,N)
+    profit=zeros(S,SC)
     for s= 1:S
-        for n=1:N
-        profit[s,n] = sum(value.(p_s[s,sc]).*(psi_s[s,n]*value.(lambda[n,sc]).- C_s[s]) for sc=1:SC)/SC
+        for sc=1:SC
+            profit[s,sc] = sum(prob * (value.(p_s[s,sc]).*(psi_s[s,n]*value.(lambda[n,sc]).- C_s[s])) for n=1:N)
         end
     end
+
+    #profit=value.(p_s).*(value.(psi_s)*value.(lambda)-C_s)
 
 #strategic offer prices, expected profit of the strategic producer, expected social welfare
 
