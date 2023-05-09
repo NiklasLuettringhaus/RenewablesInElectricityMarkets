@@ -107,7 +107,7 @@ end
 
 sorted_scen = sort(scenarios)
 
-SC = 100
+SC = 20
 prob = 1/SC
 set_values = Set{Int}()
 
