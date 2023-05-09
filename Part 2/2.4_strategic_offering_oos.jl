@@ -21,7 +21,7 @@ include("A2_data_step_2.4_oos.jl")
 FN = Model(Gurobi.Optimizer)
 
 @variable(FN,p_d[d=1:D]>=0) #load of demand
-@variable(FN,p_g[g=1:G]>=0) #power scheduled of generetor g
+@variable(FN,p_o[g=1:G]>=0) #power scheduled of generetor g
 @variable(FN,p_s[s=1:S]>=0) #power scheduled of strategic generetor g
 
 @variable(FN,theta[n=1:N]) #voltage angle at each bus
@@ -29,8 +29,8 @@ FN = Model(Gurobi.Optimizer)
 
 
 @objective(FN, Max, sum(alpha_bid[sc,k]*alpha_bid_fix[k]*p_d[d] for d=1:D)  #Revenue from demand
-            - sum(cg[g]*p_g[g] for g=1:G)  
-            - sum(alpha_offer_s[s]*p_s[s] for g=1:S)) # Production cost + start-up cost conventional generator
+            - sum(cg[g]*p_o[g] for g=1:G)  
+            - sum(alpha_offer_s[s]*p_s[s] for g=1:S))
 
 #Capacity Limits
 @constraint(FN,[k=1:K, sc=1:SC], d[k] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
