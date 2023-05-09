@@ -107,7 +107,7 @@ end
 
 sorted_scen = sort(scenarios)
 
-SC = 9980
+SC = 10000-20
 prob = 1/SC
 set_values = Set{Int}()
 
@@ -125,7 +125,6 @@ generated_values = sort(collect(set_values))
 all_values = collect(1:10000)
 new_values = setdiff(all_values, generated_values)
 
-
 wind_prod=zeros(SC,1)
 alpha_bid=zeros(SC, 4)
 demand=zeros(SC, 4)
@@ -137,9 +136,10 @@ for i in 1:SC
     alpha_offer_o[i,:]=scenarios[new_values[i]][4]
 end
 
-C_s=[15.2, 23.4, 15.2, 19.1]
-alpha_offer_o_fix= [0, 5, 20.1, 24.7]
-alpha_offer_s = [17.29, 24.95, 14.32, 24.95]
+# Generator offer prices
+C_s =[15.2, 23.4, 15.2, 19.1] # Costs of stragic producers
+alpha_offer_o_fix = [0, 5, 20.1, 24.7] # Offer prices non strategic producers
+alpha_offer_s = [17.29, 24.95, 14.32, 24.95] #In sample offer prices for strategic producers
 
 ramp_up_down_limit = [90, 85, 90, 120, 0 , 350, 170, 80]
 
@@ -160,7 +160,7 @@ Omega = [ #n rows and m columns
     0 0 1 1 1 0
 ]
 
-F = Omega .* 601 #Transmission line capacity in MW
+F = Omega .* 600 #Transmission line capacity in MW
 B = Omega .* 50 #Suceptance in per unit
 Sys_power_base = 337.5  # MVA
 
