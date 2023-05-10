@@ -12,7 +12,7 @@ P_max_o=[450, 350 ,210 ,80]
 
 Random.seed!(1234)
 
-# Offer prices Demands 8 different scenarios
+# Bid prices Demands 8 different scenarios
 bid_prices = zeros(8,4)
 
 for i=1:8
