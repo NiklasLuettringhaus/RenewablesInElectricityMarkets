@@ -1,15 +1,15 @@
 ***********************
-Assignment 1 Renewables in Electricity markets
+Assignment 2 Renewables in Electricity markets
 ************************
 
 Students:
-Niklas Luettringhaus s213112
-Juan Felipe Beltran Busch-Knudsen s184356
-Pauline Thüne s220242
-David Menchaca s220037
+Niklas Luettringhaus 			s213112
+Juan Felipe Beltran Busch-Knudsen 	s184356
+Pauline Thüne 				s220242
+David Menchaca 				s220037
 
 Running the code:
 This code includes packages not found in the original environment. Thus installing these packages might be needed to run the code. 
 
-Each step from assignment one includes 1 "step file" and 1 "data file".
-Incase a step required more optimizations than one multiple pairs of files were created and named accordingly. For example: Step 5 requires three files. 2 for part one as optimization has to be perfomed sequentially (first reserve market RE and then day ahead market DA). The third file A1_step_5_DA_RE is both markets put together in one file.
+Each step from Assignment 2 includes one file containing the used model and one data file named 'A2_data_step_"stepnumber"'. For the model files, the stepnumber is used at the beginning of the filename to indicate the corresponding step.
+In case a step required more optimizations than one, multiple pairs of files were created and named accordingly. For example: Step 2.4 requires two files, one for the in-sample and one of the out-of-sample (oos) analysis.

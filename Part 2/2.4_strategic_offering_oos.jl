@@ -28,9 +28,9 @@ FN = Model(Gurobi.Optimizer)
 @variable(FN,f[n=1:N,m=1:N,sc=1:SC]) #DC flows between nodes n to m
 
 
-@objective(FN, Max, (sum(alpha_bid[sc,k]*alpha_bid_fix[k]*d[k,sc] for k=1:K, sc=1:SC)  #Revenue from demand
-            - sum(alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*p_o[o, sc] for o=1:O, sc=1:SC)  
-            - sum(alpha_offer_s[s]*p_s[s,sc] for s=1:S, sc=1:SC)))
+@objective(FN, Max, ( sum(alpha_bid[sc,k]*alpha_bid_fix[k]*d[k,sc] for k=1:K, sc=1:SC)  #Revenue from demand
+                    - sum(alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*p_o[o, sc] for o=1:O, sc=1:SC)  
+                    - sum(alpha_offer_s[s]*p_s[s,sc] for s=1:S, sc=1:SC)))
 
 #Capacity Limits
 @constraint(FN,[k=1:K, sc=1:SC], d[k, sc] <= D_max_k[k]*demand[sc,k])   #Demand limits constraint
@@ -53,7 +53,6 @@ FN = Model(Gurobi.Optimizer)
 @constraint(FN,[sc=1:SC],theta[1,sc]== 0) # Voltage angle at the reference bus
 @constraint(FN,[n=1:N,m=1:N, sc=1:SC], f[n,m,sc]==Sys_power_base*B[n,m]*(theta[n,sc]-theta[m,sc])) #Power flow constraints
 
-
 #************************************************************************
 
 #************************************************************************
@@ -73,6 +72,10 @@ if termination_status(FN) == MOI.OPTIMAL
     for s= 1:S
     profit_s[s]= sum(prob * value.(p_s[s,sc])*value.(lambda[n,sc]) for n=1:N, sc=1:SC) - sum(prob * value.(p_s[s,sc])*C_s[s] for sc=1:SC)
     end
+
+    SW = (    sum(alpha_bid[sc,k]*alpha_bid_fix[k]*value.(d[k,sc]) for k=1:K, sc=1:SC)  #Revenue from demand
+            - sum(alpha_offer_o[sc,o]*alpha_offer_o_fix[o]*value.(p_o[o, sc]) for o=1:O, sc=1:SC)  
+            - sum(alpha_offer_s[s]*value.(p_s[s,sc]) for s=1:S, sc=1:SC))/SC
     #=
     DA_price_df=DataFrame(transpose(DA_price), nodes)
     DC_flow_df=DataFrame(value.(transpose(f[:, :])),nodes)
